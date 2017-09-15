@@ -1,0 +1,72 @@
+TODO:
+
+- function to set main window (height, width, fullscreen, etc.)
+- x2 scaling images (constant)
+- screen object to handle
+	- generic render function for all sprites
+	- sdl clear probably should be here somewhere
+- inputs class
+	- seperate it out to keyboard class, mouse, etc
+- Game timer, something similar to:
+		double delta = 0;
+		long current = 0;
+		int frames = 0;
+		int updates = 0;
+		int fps = 60; // FPS
+
+		long lastTime = System.nanoTime();
+		long timer = System.currentTimeMillis(); // 1000 milliseconds = 1 second
+
+		final double ns = 1000000000.0 / fps;
+
+		/* Make game the focus application */
+		requestFocus();
+
+		while (running) {
+
+			/* Calculate how much time has past */
+			current = System.nanoTime();
+			delta += (current - lastTime) / ns;
+			lastTime = current;
+
+			/* Runs the amount 'fps' variable is set to, every second */
+			while (delta >= 1) {
+				update();
+				updates++;
+				delta--;
+			}
+
+			/* Call to draw stuff on screen */
+			render();
+			frames++;
+
+			/* Runs every second */
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				frame.setTitle(title + "  |  " + updates + " Ups, " + frames + " Fps");
+				updates = 0;
+				frames = 0;
+			}
+		}
+		// When running != true
+		stop();
+		- render function is called here
+		- before rendering, set offsets from the player to render 'around' the player
+- level class
+	- loads in a 'level' picture with each pixel representing a tile
+	- store the pixels of the image in an array
+		- tiles = new int[width * height];
+		- need to get RGB values of pixels in the image
+			- c++ may be different, but they would be store in 'tiles' array
+	- level would be responsible for spawning entities
+		- *nice to have* keep in mind 'triggers' so not all entities spawn at once
+	- getTile function that knowns about the tile array,
+		- x and y are parameters, get tile at that pixel
+		- looks up the parent Tile class that stores the RGB value associated with a specific tile
+		- child tiles would extend the Tile class, have its own stuff
+			- if it has collision, breakable, etc.
+		- returns the child Tile *try to make the image static only, not the entire class*
+	- render function that takes the screen object as a parameter
+		- would call the render function for entities, effects, etc.
+			- also pass through the screen object
+	- render calls the getTile looping through the entire screen, offset
