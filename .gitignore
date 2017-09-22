@@ -34,3 +34,11 @@ bld/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
+
+Makefile
+.ycm_extra_conf.py
+bin/
+build/
+assets/
+include/
+lib/
