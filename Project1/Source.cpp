@@ -7,19 +7,18 @@
 class Renderer
 {
 public:
-        Renderer();
-        ~Renderer();
+	Renderer();
+	~Renderer();
 
-        void render();
+	void render();
 
-        SDL_Texture* loadTexture(std::string);
+	SDL_Texture* loadTexture(std::string);
 
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
 
 private:
-
 	//The window we'll be rendering to
 	SDL_Window* window;
 
@@ -110,7 +109,7 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 		//Get rid of old loaded surface
 		SDL_FreeSurface(loadedSurface);
 	}
-        return texture;
+	return texture;
 }
 
 class Game
@@ -124,7 +123,7 @@ public:
 private:
 	bool isRunning;
 
-        std::unique_ptr<Renderer> renderer;
+	std::unique_ptr<Renderer> renderer;
 
 	void handleInput(SDL_Keycode);
 };
@@ -144,7 +143,7 @@ Game::Game()
 	renderer = std::make_unique<Renderer>();
 
 	//Load PNG texture
-	SDL_Texture* texture = renderer->loadTexture("assets/texture.png");
+	SDL_Texture* texture = renderer->loadTexture("texture.png");
 	if (texture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
