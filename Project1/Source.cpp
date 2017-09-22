@@ -110,8 +110,7 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 		//Get rid of old loaded surface
 		SDL_FreeSurface(loadedSurface);
 	}
-
-	return texture;
+        return texture;
 }
 
 class Game
