@@ -35,3 +35,11 @@ bld/
 #wwwroot/
 
 *mylog.txt
+
+Makefile
+.ycm_extra_conf.py
+bin/
+build/
+assets/
+include/
+lib/
