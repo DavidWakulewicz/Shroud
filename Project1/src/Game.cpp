@@ -22,7 +22,7 @@ Game::Game()
 	renderer = std::make_unique<Renderer>();
 
 	//Load PNG texture
-	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTile.png");
+	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
 	if (texture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;

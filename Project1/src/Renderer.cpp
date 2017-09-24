@@ -66,18 +66,25 @@ void Renderer::render()
 }
 
 void Renderer::renderTiles() {
-	SDL_Rect SrcR;
-	SDL_Rect DestR;
+	SDL_Rect destR;
 
-	SrcR.x = 0;
-	SrcR.y = 0;
-	SrcR.w = 16;
-	SrcR.h = 16;
+	int x, y;
+	int textureWidth, textureHeight;
+	SDL_QueryTexture(texture, NULL, NULL, &textureWidth, &textureHeight);
+
+	for (x = 0; x < SCREEN_WIDTH; x+=textureWidth) {
+		De
+	}
 
 	DestR.x = 640 / 2 - 16 / 2;
 	DestR.y = 480 / 2 - 16 / 2;
-	DestR.w = 16;
-	DestR.h = 16;
+	DestR.w = 32;
+	DestR.h = 32;
+
+	SDL_RenderCopy(renderer, texture, NULL, &DestR);
+
+	DestR.x = 500 / 2 - 16 / 2;
+	DestR.y = 300 / 2 - 16 / 2;
 
 	SDL_RenderCopy(renderer, texture, NULL, &DestR);
 }
