@@ -42,5 +42,4 @@ Makefile
 bin/
 build/
 assets/
-include/
 lib/
