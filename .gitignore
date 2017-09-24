@@ -39,8 +39,8 @@ bld/
 
 Makefile
 .ycm_extra_conf.py
-bin/
-build/
-assets/
-include/
-lib/
+Project1/bin/
+Project1/build/
+Project1/assets/
+Project1/include/
+Project1/lib/
