@@ -40,29 +40,20 @@ Game::~Game()
 
 void Game::run()
 {
-	double delta = 0;
-	long long current = 0;
-	int frames = 0;
-	int updates = 0;
-	int ups = 60;
-
-	long long lastTime = SDL_GetTicks();
-	long long timer = lastTime;
-
-	const double MS_PER_UPDATE = 1000.0 / ups;
-
 	//While application is running
 	while (isRunning)
 	{
 		// Timer calculations
 		current = SDL_GetTicks();
-		delta += (current - lastTime) / MS_PER_UPDATE;
+		delta = (current - lastTime) / 1000.0f;
 		lastTime = current;
 
-		while (delta >= 1) {
+		updateDelta += delta;
+
+		while (updateDelta >= SECONDS_PER_UPDATE) {
 			// Future call to 'update' function that updates location of enemies, players, spells, etc.
 			updates++;
-			delta--;
+			updateDelta -= SECONDS_PER_UPDATE;
 		}
 
 		// Future call to 'render' function here, will control all rendering (RenderClear, RenderCopy, RenderPresent will get moved there)
@@ -70,13 +61,17 @@ void Game::run()
 
 		renderer->render();
 
-		if (SDL_GetTicks() - timer > 1000) {
+		timer += delta;
+		if (timer > 1.0f) {
 			std::ostringstream title;
-			title << "Shroud" << "  |  " << updates << " UPS  " << frames << " FPS";
+			title << "Shroud" << "  |  "
+			        << static_cast<int>(updates) << " UPS  "
+			        << frames << " FPS";
 			renderer->setWindowTitle(title.str());
-			timer += 1000;
+
+                        timer -= 1.0f;
+                        frames = 0;
 			updates = 0;
-			frames = 0;
 		}
 
 		//Event handler
@@ -85,7 +80,7 @@ void Game::run()
 		//Handle events on queue
 		while (SDL_PollEvent(&e) != 0)
 		{
-			switch (e.type)
+			switch(e.type)
 			{
 			case SDL_QUIT:
 				stop();
