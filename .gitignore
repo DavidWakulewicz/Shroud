@@ -39,7 +39,7 @@ bld/
 
 Makefile
 .ycm_extra_conf.py
-bin/
-build/
-assets/
-lib/
+Project1/bin/
+Project1/build/
+Project1/lib/
+Project1/include/SDL2

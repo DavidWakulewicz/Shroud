@@ -13,7 +13,7 @@ Renderer::Renderer()
 	// SDL_WINDOW_SHOWN flag is ignored according to document.
 	// Might want to eventually use SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_INPUT_GRABBED
 	// https://wiki.libsdl.org/SDL_CreateWindow
-	window = SDL_CreateWindow("A cool title",
+	window = SDL_CreateWindow("Shroud",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		SCREEN_WIDTH,
