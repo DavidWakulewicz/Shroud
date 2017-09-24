@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include <fstream>
 #include <sstream>
 #include <memory>
 
@@ -135,6 +134,20 @@ private:
 
 	std::unique_ptr<Renderer> renderer;
 
+	float delta = 0;
+	float updateDelta = 0;
+	uint64_t current = 0;
+
+	uint8_t updates = 0;
+	uint16_t frames = 0;
+
+	uint64_t lastTime = SDL_GetTicks();
+	float timer = 0;
+
+	const uint8_t UPDATES_PER_SECOND = 32;
+	const float SECONDS_PER_UPDATE = 1.0 / UPDATES_PER_SECOND;
+
+
 	void handleInput(SDL_Keycode);
 };
 
@@ -153,7 +166,7 @@ Game::Game()
 	renderer = std::make_unique<Renderer>();
 
 	//Load PNG texture
-	SDL_Texture* texture = renderer->loadTexture("texture.png");
+	SDL_Texture* texture = renderer->loadTexture("assets/texture.png");
 	if (texture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -171,29 +184,20 @@ Game::~Game()
 
 void Game::run()
 {
-	double delta = 0;
-	long long current = 0;
-	int frames = 0;
-	int updates = 0;
-	int ups = 60;
-
-	long long lastTime = SDL_GetTicks();
-	long long timer = lastTime;
-
-	const double MS_PER_FRAME = 1000.0 / ups;
-
 	//While application is running
 	while (isRunning)
 	{
 		// Timer calculations
 		current = SDL_GetTicks();
-		delta += (current - lastTime) / MS_PER_FRAME;
+		delta = (current - lastTime) / 1000.0f;
 		lastTime = current;
 
-		while (delta >= 1) {
+		updateDelta += delta;
+
+		while (updateDelta >= SECONDS_PER_UPDATE) {
 			// Future call to 'update' function that updates location of enemies, players, spells, etc.
 			updates++;
-			delta--;
+			updateDelta -= SECONDS_PER_UPDATE;
 		}
 
 		// Future call to 'render' function here, will control all rendering (RenderClear, RenderCopy, RenderPresent will get moved there)
@@ -201,13 +205,16 @@ void Game::run()
 
 		renderer->render();
 
-		if (SDL_GetTicks() - timer > 1000) {
+		timer += delta;
+		if (timer > 1.0f) {
 			std::ostringstream title;
-			title << "Shroud" << "  |  " << updates << " UPS  " << frames << " FPS";
+			title << "Shroud" << "  |  "
+			        << updates << " UPS  " << frames << " FPS";
 			renderer->setWindowTitle(title.str());
-			timer += 1000;
+
+                        timer -= 1.0f;
+                        frames = 0;
 			updates = 0;
-			frames = 0;
 		}
 
 		//Event handler
