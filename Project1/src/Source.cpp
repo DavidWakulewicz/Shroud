@@ -166,7 +166,7 @@ Game::Game()
 	renderer = std::make_unique<Renderer>();
 
 	//Load PNG texture
-	SDL_Texture* texture = renderer->loadTexture("assets/texture.png");
+	SDL_Texture* texture = renderer->loadTexture("texture.png");
 	if (texture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
