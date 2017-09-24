@@ -180,14 +180,14 @@ void Game::run()
 	long long lastTime = SDL_GetTicks();
 	long long timer = lastTime;
 
-	const double MS_PER_FRAME = 1000.0 / ups;
+	const double MS_PER_UPDATE = 1000.0 / ups;
 
 	//While application is running
 	while (isRunning)
 	{
 		// Timer calculations
 		current = SDL_GetTicks();
-		delta += (current - lastTime) / MS_PER_FRAME;
+		delta += (current - lastTime) / MS_PER_UPDATE;
 		lastTime = current;
 
 		while (delta >= 1) {
