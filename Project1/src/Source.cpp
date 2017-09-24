@@ -18,6 +18,7 @@ public:
 	SDL_Texture* loadTexture(std::string);
 
 	void setWindowTitle(std::string);
+	void renderTiles();
 
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 640;
@@ -85,10 +86,28 @@ void Renderer::render()
 	SDL_RenderClear(renderer);
 
 	//Render texture to screen
-	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	//SDL_RenderCopy(renderer, texture, NULL, NULL);
+	renderTiles();
 
 	//Update screen
 	SDL_RenderPresent(renderer);
+}
+
+void Renderer::renderTiles() {
+	SDL_Rect SrcR;
+	SDL_Rect DestR;
+
+	SrcR.x = 0;
+	SrcR.y = 0;
+	SrcR.w = 16;
+	SrcR.h = 16;
+
+	DestR.x = 640 / 2 - 16 / 2;
+	DestR.y = 480 / 2 - 16 / 2;
+	DestR.w = 16;
+	DestR.h = 16;
+
+	SDL_RenderCopy(renderer, texture, NULL, &DestR);
 }
 
 SDL_Texture* Renderer::loadTexture(std::string path)
@@ -153,7 +172,7 @@ Game::Game()
 	renderer = std::make_unique<Renderer>();
 
 	//Load PNG texture
-	SDL_Texture* texture = renderer->loadTexture("texture.png");
+	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTile.png");
 	if (texture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
