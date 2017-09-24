@@ -77,6 +77,7 @@ void Game::run()
 		//Event handler
 		SDL_Event e;
 
+		// Should eventually be in the call to 'update' function
 		//Handle events on queue
 		while (SDL_PollEvent(&e) != 0)
 		{
@@ -95,10 +96,36 @@ void Game::run()
 
 void Game::handleInput(SDL_Keycode key)
 {
+	int currentYOffset = 0;
+	int currentXOffset = 0;
+
+	// PLAYER MOVEMENT TODO
+	// Should create a map of keys with true/false values
+	// default false
+	// set to true when key is pressed
+	// set to false when key is unpressed
+	// -- should prevent the ~second delay after a key is initially held down to signal continuous movement
+	// check true/false values when updating player position instead
 	switch (key)
 	{
 	case SDLK_ESCAPE:
 		stop();
+		break;
+	case SDLK_w:
+		currentYOffset = renderer->GetYOffset();
+		renderer->SetYOffset(currentYOffset + 1);
+		break;
+	case SDLK_s:
+		currentYOffset = renderer->GetYOffset();
+		renderer->SetYOffset(currentYOffset - 1);
+		break;
+	case SDLK_a:
+		currentXOffset = renderer->GetXOffset();
+		renderer->SetXOffset(currentXOffset + 1);
+		break;
+	case SDLK_d:
+		currentXOffset = renderer->GetXOffset();
+		renderer->SetXOffset(currentXOffset - 1);
 		break;
 	}
 	return;

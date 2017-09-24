@@ -18,6 +18,12 @@ public:
 	void setWindowTitle(std::string);
 	void renderTiles();
 
+	void SetXOffset(int);
+	void SetYOffset(int);
+
+	int GetXOffset();
+	int GetYOffset();
+
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
@@ -31,6 +37,10 @@ private:
 
 	//Current displayed texture
 	SDL_Texture* texture;
+
+	// Screen offsets
+	int xOffset = 0;
+	int yOffset = 0;
 };
 
 #endif //RENDERER_H
