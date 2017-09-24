@@ -144,7 +144,7 @@ private:
 	uint64_t lastTime = SDL_GetTicks();
 	float timer = 0;
 
-	const uint8_t UPDATES_PER_SECOND = 32;
+	const uint8_t UPDATES_PER_SECOND = 60;
 	const float SECONDS_PER_UPDATE = 1.0 / UPDATES_PER_SECOND;
 
 
