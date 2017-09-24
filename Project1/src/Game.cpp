@@ -105,6 +105,7 @@ void Game::handleInput(SDL_Keycode key)
 	// set to true when key is pressed
 	// set to false when key is unpressed
 	// -- should prevent the ~second delay after a key is initially held down to signal continuous movement
+	// -- should also allow for 'double movement' when, for example, 'W' and 'A' keys are pressed together
 	// check true/false values when updating player position instead
 	switch (key)
 	{
