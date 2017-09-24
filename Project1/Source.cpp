@@ -2,6 +2,9 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <fstream>
+#include <sstream>
 #include <memory>
 
 class Renderer
@@ -13,6 +16,8 @@ public:
 	void render();
 
 	SDL_Texture* loadTexture(std::string);
+
+	void setWindowTitle(std::string);
 
 	//Screen dimension constants
 	const int SCREEN_WIDTH = 640;
@@ -112,6 +117,11 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 	return texture;
 }
 
+void Renderer::setWindowTitle(std::string title)
+{
+        SDL_SetWindowTitle(window, title.c_str());
+}
+
 class Game
 {
 public:
@@ -161,9 +171,45 @@ Game::~Game()
 
 void Game::run()
 {
+	double delta = 0;
+	long long current = 0;
+	int frames = 0;
+	int updates = 0;
+	int ups = 60;
+
+	long long lastTime = SDL_GetTicks();
+	long long timer = lastTime;
+
+	const double MS_PER_UPDATE = 1000.0 / ups;
+
 	//While application is running
 	while (isRunning)
 	{
+		// Timer calculations
+		current = SDL_GetTicks();
+		delta += (current - lastTime) / MS_PER_UPDATE;
+		lastTime = current;
+
+		while (delta >= 1) {
+			// Future call to 'update' function that updates location of enemies, players, spells, etc.
+			updates++;
+			delta--;
+		}
+
+		// Future call to 'render' function here, will control all rendering (RenderClear, RenderCopy, RenderPresent will get moved there)
+		frames++;
+
+		renderer->render();
+
+		if (SDL_GetTicks() - timer > 1000) {
+			std::ostringstream title;
+			title << "Shroud" << "  |  " << updates << " UPS  " << frames << " FPS";
+			renderer->setWindowTitle(title.str());
+			timer += 1000;
+			updates = 0;
+			frames = 0;
+		}
+
 		//Event handler
 		SDL_Event e;
 
@@ -180,8 +226,6 @@ void Game::run()
 				break;
 			}
 		}
-
-		renderer->render();
 	}
 }
 
