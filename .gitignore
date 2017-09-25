@@ -39,7 +39,6 @@ bld/
 
 .d/
 .ycm_extra_conf.py
-Makefile
 Project1/bin/
 Project1/build/
 Project1/lib/
