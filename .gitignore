@@ -37,7 +37,6 @@ bld/
 
 *mylog.txt
 
-Makefile
 .ycm_extra_conf.py
 Project1/bin/
 Project1/build/
