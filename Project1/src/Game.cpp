@@ -1,11 +1,7 @@
 #include "Game.h"
-#include <SDL2/SDL.h>
+
 #include <iostream>
-#include <string>
-#include <chrono>
-#include <fstream>
 #include <sstream>
-#include <memory>
 
 Game::Game()
 {

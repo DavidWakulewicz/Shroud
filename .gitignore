@@ -37,9 +37,10 @@ bld/
 
 *mylog.txt
 
-Makefile
+.d/
 .ycm_extra_conf.py
+Makefile
 Project1/bin/
 Project1/build/
 Project1/lib/
-Project1/include/SDL2
+Project1/include/SDL2/
