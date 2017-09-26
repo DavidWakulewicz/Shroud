@@ -3,29 +3,32 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include <memory>
+
+#include "Camera.h"
 
 class Renderer
 {
 public:
-	Renderer();
+	Renderer(std::shared_ptr<Camera>);
 	~Renderer();
 
-	void render();
+	void Render();
 
 	SDL_Texture* loadTexture(std::string);
 
-	void setWindowTitle(std::string);
-	void renderTiles();
+	bool isFullscreen;
+	void ToggleFullscreen();
+	void ToggleFullscreen(uint32_t);
 
-	void SetXOffset(int);
-	void SetYOffset(int);
-
-	int GetXOffset();
-	int GetYOffset();
+	void SetWindowTitle(std::string);
 
 	//Screen dimension constants
-	const int SCREEN_WIDTH = 640;
-	const int SCREEN_HEIGHT = 480;
+	const int64_t SCREEN_WIDTH = 640;
+	const int64_t SCREEN_HEIGHT = 480;
+
+	const int64_t WORLD_WIDTH = SCREEN_WIDTH * 5;
+	const int64_t WORLD_HEIGHT = SCREEN_HEIGHT * 5;
 
 private:
 	//The window we'll be rendering to
@@ -37,9 +40,9 @@ private:
 	//Current displayed texture
 	SDL_Texture* texture;
 
-	// Screen offsets
-	int xOffset = 0;
-	int yOffset = 0;
+	std::shared_ptr<Camera> camera;
+
+	void renderTiles();
 };
 
 #endif //RENDERER_H
