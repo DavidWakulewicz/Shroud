@@ -6,6 +6,9 @@
 
 #include "Renderer.h"
 
+class Camera;
+class Renderer;
+
 class Game
 {
 public:
@@ -17,6 +20,7 @@ public:
 private:
 	bool isRunning;
 
+	std::shared_ptr<Camera> camera;
 	std::unique_ptr<Renderer> renderer;
 
 	float delta = 0;

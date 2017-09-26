@@ -3,7 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
-Renderer::Renderer()
+Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
 {
 	// Create window
 	// SDL_WINDOW_SHOWN flag is ignored according to document.
@@ -40,6 +40,11 @@ Renderer::Renderer()
 	}
 
 	isFullscreen = false;
+
+	camera->scale.Set(2.0f, 2.0f);
+	camera->bounds.Set(WORLD_WIDTH, WORLD_HEIGHT);
+	camera->size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
+	SDL_RenderSetScale(renderer, camera->scale.x, camera->scale.y);
 }
 
 Renderer::~Renderer()
@@ -50,10 +55,12 @@ Renderer::~Renderer()
 	IMG_Quit();
 }
 
-void Renderer::render()
+void Renderer::Render()
 {
 	//Clear screen
 	SDL_RenderClear(renderer);
+
+	SDL_RenderSetScale(renderer, camera->scale.x, camera->scale.y);
 
 	//Render texture to screen
 	renderTiles();
@@ -72,32 +79,16 @@ void Renderer::renderTiles() {
 	destR.w = textureWidth;
 	destR.h = textureHeight;
 
-	for (x = 0; x < SCREEN_WIDTH; x += textureWidth) {
+	for (x = 0; x < WORLD_WIDTH; x += textureWidth) {
 
-		destR.x = x + xOffset;
+		destR.x = x - camera->position.x;
 
-		for (y = 0; y < SCREEN_HEIGHT; y += textureHeight) {
+		for (y = 0; y < WORLD_HEIGHT; y += textureHeight) {
 			//std::cout << "x position: " << x << "    y position: " << y << "\n";
-			destR.y = y + yOffset;
+			destR.y = y - camera->position.y;
 			SDL_RenderCopy(renderer, texture, NULL, &destR);
 		}
 	}
-}
-
-void Renderer::SetXOffset(int offset) {
-	xOffset = offset;
-}
-
-void Renderer::SetYOffset(int offset) {
-	yOffset = offset;
-}
-
-int Renderer::GetXOffset() {
-	return xOffset;
-}
-
-int Renderer::GetYOffset() {
-	return yOffset;
 }
 
 SDL_Texture* Renderer::loadTexture(std::string path)
@@ -154,7 +145,7 @@ void Renderer::ToggleFullscreen(uint32_t flag)
 }
 
 
-void Renderer::setWindowTitle(std::string title)
+void Renderer::SetWindowTitle(std::string title)
 {
 	SDL_SetWindowTitle(window, title.c_str());
 }

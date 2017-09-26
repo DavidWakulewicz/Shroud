@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "Renderer.h"
+
 Game::Game()
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0) {
@@ -15,7 +17,9 @@ Game::Game()
 		std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
 	}
 
-	renderer = std::make_unique<Renderer>();
+
+	camera = std::make_shared<Camera>();
+	renderer = std::make_unique<Renderer>(camera);
 
 	//Load PNG texture
 	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
@@ -50,12 +54,41 @@ void Game::run()
 			// Future call to 'update' function that updates location of enemies, players, spells, etc.
 			updates++;
 			updateDelta -= SECONDS_PER_UPDATE;
+
+			//Event handler
+			SDL_Event e;
+
+			//Handle events on queue
+			while (SDL_PollEvent(&e) != 0)
+			{
+				switch(e.type)
+				{
+				case SDL_QUIT:
+					stop();
+					break;
+				case SDL_KEYDOWN:
+					handleInput(e.key.keysym.sym);
+					break;
+				case SDL_MOUSEWHEEL:
+					if (e.wheel.y < 0)
+					{
+						camera->ZoomIn();
+					}
+					else if (e.wheel.y > 0)
+					{
+						camera->ZoomOut();
+					}
+					break;
+				}
+			}
+
+			camera->Update();
 		}
 
 		// Future call to 'render' function here, will control all rendering (RenderClear, RenderCopy, RenderPresent will get moved there)
 		frames++;
 
-		renderer->render();
+		renderer->Render();
 
 		timer += delta;
 		if (timer > 1.0f) {
@@ -63,38 +96,17 @@ void Game::run()
 			title << "Shroud" << "  |  "
 			        << static_cast<int>(updates) << " UPS  "
 			        << frames << " FPS";
-			renderer->setWindowTitle(title.str());
+			renderer->SetWindowTitle(title.str());
 
                         timer -= 1.0f;
                         frames = 0;
 			updates = 0;
-		}
-
-		//Event handler
-		SDL_Event e;
-
-		// Should eventually be in the call to 'update' function
-		//Handle events on queue
-		while (SDL_PollEvent(&e) != 0)
-		{
-			switch(e.type)
-			{
-			case SDL_QUIT:
-				stop();
-				break;
-			case SDL_KEYDOWN:
-				handleInput(e.key.keysym.sym);
-				break;
-			}
 		}
 	}
 }
 
 void Game::handleInput(SDL_Keycode key)
 {
-	int currentYOffset = 0;
-	int currentXOffset = 0;
-
 	// PLAYER MOVEMENT TODO
 	// Should create a map of keys with true/false values
 	// default false
@@ -109,20 +121,16 @@ void Game::handleInput(SDL_Keycode key)
 		stop();
 		break;
 	case SDLK_w:
-		currentYOffset = renderer->GetYOffset();
-		renderer->SetYOffset(currentYOffset + 1);
+		camera->position.y -= 10;
 		break;
 	case SDLK_s:
-		currentYOffset = renderer->GetYOffset();
-		renderer->SetYOffset(currentYOffset - 1);
+		camera->position.y += 10;
 		break;
 	case SDLK_a:
-		currentXOffset = renderer->GetXOffset();
-		renderer->SetXOffset(currentXOffset + 1);
+		camera->position.x -= 10;
 		break;
 	case SDLK_d:
-		currentXOffset = renderer->GetXOffset();
-		renderer->SetXOffset(currentXOffset - 1);
+		camera->position.x += 10;
 		break;
 	case SDLK_f:
 		renderer->ToggleFullscreen();

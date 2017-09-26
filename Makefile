@@ -3,7 +3,7 @@ CLIENT_BUILD = Project1/build
 CLIENT_SRC = Project1/src
 CLIENT_BIN = Project1/bin
 
-CLIENT_SRCS = Game.cpp Renderer.cpp main.cpp
+CLIENT_SRCS = Camera.cpp Game.cpp Renderer.cpp main.cpp
 CLIENT_SRCS := $(CLIENT_SRCS:%.cpp=$(CLIENT_SRC)/%.cpp)
 
 CLIENT_OBJS := $(CLIENT_SRCS:$(CLIENT_SRC)%.cpp=$(CLIENT_BUILD)%.o)
@@ -22,7 +22,7 @@ ifeq ($(OS),Windows_NT)
 	CLIENT_OBJS := $(subst /,\,$(CLIENT_OBJS))
 	CLIENT_BUILD := $(subst /,\,$(CLIENT_BUILD))
 	CLIENT_SRC := $(subst /,\,$(CLIENT_SRC))
-	CLIENT_BIN := $(subst /,\,$(CLIENT_SRC))
+	CLIENT_BIN := $(subst /,\,$(CLIENT_BIN))
 	CLIENT_BINARY = Shroud.exe
 	CLIENT_BINARY_PATH = $(CLIENT_BIN)\$(CLIENT_BINARY)
 
