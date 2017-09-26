@@ -58,7 +58,6 @@ void Renderer::render()
 	SDL_RenderClear(renderer);
 
 	//Render texture to screen
-	//SDL_RenderCopy(renderer, texture, NULL, NULL);
 	renderTiles();
 
 	//Update screen
@@ -66,20 +65,41 @@ void Renderer::render()
 }
 
 void Renderer::renderTiles() {
-	SDL_Rect SrcR;
-	SDL_Rect DestR;
+	SDL_Rect destR;
 
-	SrcR.x = 0;
-	SrcR.y = 0;
-	SrcR.w = 16;
-	SrcR.h = 16;
+	int x, y;
+	int textureWidth, textureHeight;
+	SDL_QueryTexture(texture, NULL, NULL, &textureWidth, &textureHeight);
 
-	DestR.x = 640 / 2 - 16 / 2;
-	DestR.y = 480 / 2 - 16 / 2;
-	DestR.w = 16;
-	DestR.h = 16;
+	destR.w = textureWidth;
+	destR.h = textureHeight;
 
-	SDL_RenderCopy(renderer, texture, NULL, &DestR);
+	for (x = 0; x < SCREEN_WIDTH; x += textureWidth) {
+
+		destR.x = x + xOffset;
+
+		for (y = 0; y < SCREEN_HEIGHT; y += textureHeight) {
+			//std::cout << "x position: " << x << "    y position: " << y << "\n";
+			destR.y = y + yOffset;
+			SDL_RenderCopy(renderer, texture, NULL, &destR);
+		}
+	}
+}
+
+void Renderer::SetXOffset(int offset) {
+	xOffset = offset;
+}
+
+void Renderer::SetYOffset(int offset) {
+	yOffset = offset;
+}
+
+int Renderer::GetXOffset() {
+	return xOffset;
+}
+
+int Renderer::GetYOffset() {
+	return yOffset;
 }
 
 SDL_Texture* Renderer::loadTexture(std::string path)
