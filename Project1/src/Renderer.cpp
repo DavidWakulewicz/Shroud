@@ -1,11 +1,7 @@
-#include <SDL2/SDL_image.h>
 #include "Renderer.h"
+
+#include <SDL2/SDL_image.h>
 #include <iostream>
-#include <string>
-#include <chrono>
-#include <fstream>
-#include <sstream>
-#include <memory>
 
 Renderer::Renderer()
 {

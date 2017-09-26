@@ -1,9 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Renderer.h"
-#include <memory>
 #include <SDL2/SDL.h>
+#include <memory>
+
+#include "Renderer.h"
 
 class Game
 {
