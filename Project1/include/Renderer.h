@@ -17,6 +17,10 @@ public:
 
 	SDL_Texture* loadTexture(std::string);
 
+	bool isFullscreen;
+	void ToggleFullscreen();
+	void ToggleFullscreen(uint32_t);
+
 	void SetWindowTitle(std::string);
 
 	//Screen dimension constants

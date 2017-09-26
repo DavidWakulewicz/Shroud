@@ -132,6 +132,9 @@ void Game::handleInput(SDL_Keycode key)
 	case SDLK_d:
 		camera->position.x += 10;
 		break;
+	case SDLK_f:
+		renderer->ToggleFullscreen();
+		break;
 	}
 	return;
 }

@@ -39,6 +39,8 @@ Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
 		exit(2);
 	}
 
+	isFullscreen = false;
+
 	camera->scale.Set(2.0f, 2.0f);
 	camera->bounds.Set(WORLD_WIDTH, WORLD_HEIGHT);
 	camera->size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -114,6 +116,34 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 	}
 	return texture;
 }
+
+void Renderer::ToggleFullscreen()
+{
+	if (isFullscreen)
+	{
+		SDL_SetWindowFullscreen(window, 0);
+		isFullscreen = false;
+	}
+	else
+	{
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		isFullscreen = true;
+	}
+}
+
+void Renderer::ToggleFullscreen(uint32_t flag)
+{
+	SDL_SetWindowFullscreen(window, flag);
+	if (flag & SDL_WINDOW_FULLSCREEN)
+	{
+		isFullscreen = false;
+	}
+	else
+	{
+		isFullscreen = true;
+	}
+}
+
 
 void Renderer::SetWindowTitle(std::string title)
 {
