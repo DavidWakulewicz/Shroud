@@ -38,6 +38,8 @@ Renderer::Renderer()
 		std::cout << std::endl << std::endl << std::endl;
 		exit(2);
 	}
+
+	isFullscreen = false;
 }
 
 Renderer::~Renderer()
@@ -123,6 +125,34 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 	}
 	return texture;
 }
+
+void Renderer::ToggleFullscreen()
+{
+	if (isFullscreen)
+	{
+		SDL_SetWindowFullscreen(window, 0);
+		isFullscreen = false;
+	}
+	else
+	{
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		isFullscreen = true;
+	}
+}
+
+void Renderer::ToggleFullscreen(uint32_t flag)
+{
+	SDL_SetWindowFullscreen(window, flag);
+	if (flag & SDL_WINDOW_FULLSCREEN)
+	{
+		isFullscreen = false;
+	}
+	else
+	{
+		isFullscreen = true;
+	}
+}
+
 
 void Renderer::setWindowTitle(std::string title)
 {

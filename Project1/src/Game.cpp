@@ -124,6 +124,9 @@ void Game::handleInput(SDL_Keycode key)
 		currentXOffset = renderer->GetXOffset();
 		renderer->SetXOffset(currentXOffset - 1);
 		break;
+	case SDLK_f:
+		renderer->ToggleFullscreen();
+		break;
 	}
 	return;
 }

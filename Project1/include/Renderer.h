@@ -20,6 +20,10 @@ public:
 	void SetXOffset(int);
 	void SetYOffset(int);
 
+	bool isFullscreen;
+	void ToggleFullscreen();
+	void ToggleFullscreen(uint32_t);
+
 	int GetXOffset();
 	int GetYOffset();
 
