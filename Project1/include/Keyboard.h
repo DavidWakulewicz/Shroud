@@ -9,13 +9,13 @@ public:
 	Keyboard();
 	~Keyboard();
 
-	bool up;
-	bool down;
-	bool left;
-	bool right;
+	bool Up;
+	bool Down;
+	bool Left;
+	bool Right;
 
-	bool fullscreen;
-	bool escape;
+	bool Fullscreen;
+	bool Escape;
 
 	void Update();
 

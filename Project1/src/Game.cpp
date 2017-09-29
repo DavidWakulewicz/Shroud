@@ -105,13 +105,13 @@ void Game::update() {
 
 	keyboard->Update();
 
-	if (keyboard->up)    camera->position.y -= 10;
-	if (keyboard->down)  camera->position.y += 10; 
-	if (keyboard->left)  camera->position.x -= 10; 
-	if (keyboard->right) camera->position.x += 10;
+	if (keyboard->Up)    camera->position.y -= 10;
+	if (keyboard->Down)  camera->position.y += 10; 
+	if (keyboard->Left)  camera->position.x -= 10; 
+	if (keyboard->Right) camera->position.x += 10;
 
-	if (keyboard->escape)     stop();
-	if (keyboard->fullscreen) renderer->ToggleFullscreen();
+	if (keyboard->Escape)     stop();
+	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
 
 	camera->Update();
 }

@@ -17,13 +17,13 @@ void Keyboard::Update()
 	const uint8_t *state = SDL_GetKeyboardState(NULL);
 
 	// Movement
-	up    = state[SDL_GetScancodeFromKey(SDLK_w)];
-	down  = state[SDL_GetScancodeFromKey(SDLK_s)];
-	left  = state[SDL_GetScancodeFromKey(SDLK_a)];
-	right = state[SDL_GetScancodeFromKey(SDLK_d)];
+	Up    = state[SDL_GetScancodeFromKey(SDLK_w)];
+	Down  = state[SDL_GetScancodeFromKey(SDLK_s)];
+	Left  = state[SDL_GetScancodeFromKey(SDLK_a)];
+	Right = state[SDL_GetScancodeFromKey(SDLK_d)];
 
 	// Misc
-	escape     = state[SDL_GetScancodeFromKey(SDLK_ESCAPE)];
-	fullscreen = state[SDL_GetScancodeFromKey(SDLK_f)];
+	Escape     = state[SDL_GetScancodeFromKey(SDLK_ESCAPE)];
+	Fullscreen = state[SDL_GetScancodeFromKey(SDLK_f)];
 
 }
