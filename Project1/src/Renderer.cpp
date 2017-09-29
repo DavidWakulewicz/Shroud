@@ -41,15 +41,18 @@ Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
 
 	isFullscreen = false;
 
-	camera->scale.Set(2.0f, 2.0f);
-	camera->bounds.Set(WORLD_WIDTH, WORLD_HEIGHT);
-	camera->size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
-	SDL_RenderSetScale(renderer, camera->scale.x, camera->scale.y);
+	camera->Scale.Set(2.0f, 2.0f);
+	camera->Bounds.Set(WORLD_WIDTH, WORLD_HEIGHT);
+	camera->Size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
+	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
 }
 
 Renderer::~Renderer()
 {
-	SDL_DestroyTexture(texture);
+	for (auto texture : textures)
+	{
+		SDL_DestroyTexture(texture.second);
+	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	IMG_Quit();
@@ -60,41 +63,38 @@ void Renderer::Render()
 	//Clear screen
 	SDL_RenderClear(renderer);
 
-	SDL_RenderSetScale(renderer, camera->scale.x, camera->scale.y);
+	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
+
+	SDL_Rect dRect;
 
 	//Render texture to screen
-	renderTiles();
+	for (auto tile : tiles)
+	{
+		dRect.x = tile.Pos.x - camera->Pos.x;
+		dRect.y = tile.Pos.y - camera->Pos.y;
+		dRect.w = tile.Bounds.x;
+		dRect.h = tile.Bounds.y;
+
+		if (dRect.x > -(tile.Bounds.x / camera->Scale.x * 3) &&
+		    dRect.y > -(tile.Bounds.y / camera->Scale.y * 3) && 
+		    dRect.x < (SCREEN_WIDTH / camera->Scale.x) + (tile.Bounds.x / camera->Scale.x * 3) &&
+		    dRect.y < (SCREEN_HEIGHT / camera->Scale.y) + (tile.Bounds.y / camera->Scale.y * 3))
+		{
+			SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
+		}
+
+
+	}
 
 	//Update screen
 	SDL_RenderPresent(renderer);
-}
-
-void Renderer::renderTiles() {
-	SDL_Rect destR;
-
-	int x, y;
-	int textureWidth, textureHeight;
-	SDL_QueryTexture(texture, NULL, NULL, &textureWidth, &textureHeight);
-
-	destR.w = textureWidth;
-	destR.h = textureHeight;
-
-	for (x = 0; x < WORLD_WIDTH; x += textureWidth) {
-
-		destR.x = x - camera->position.x;
-
-		for (y = 0; y < WORLD_HEIGHT; y += textureHeight) {
-			//std::cout << "x position: " << x << "    y position: " << y << "\n";
-			destR.y = y - camera->position.y;
-			SDL_RenderCopy(renderer, texture, NULL, &destR);
-		}
-	}
 }
 
 SDL_Texture* Renderer::loadTexture(std::string path)
 {
 	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+
 	if (loadedSurface == NULL)
 	{
 		std::cout << "Unable to load image " << path.c_str()
@@ -103,8 +103,8 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 	else
 	{
 		//Create texture from surface pixels
-		texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-		if (texture == NULL)
+		textures[path] = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+		if (textures[path] == NULL)
 		{
 			std::cout << "Unable to create texture from "
 				<< path.c_str() << "! SDL Error: "
@@ -114,7 +114,20 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 		//Get rid of old loaded surface
 		SDL_FreeSurface(loadedSurface);
 	}
-	return texture;
+
+	for (int x = 0; x < WORLD_WIDTH; x += Tile::WIDTH) {
+		for (int y = 0; y < WORLD_HEIGHT; y += Tile::HEIGHT) {
+			uint64_t xPos = x - camera->Pos.x;
+			uint64_t yPos = y - camera->Pos.y;
+
+			Tile tile(path);
+			tile.Pos.x = xPos;
+			tile.Pos.y = yPos;
+			tiles.push_back(tile);
+		}
+	}
+
+	return textures[path];
 }
 
 void Renderer::ToggleFullscreen()

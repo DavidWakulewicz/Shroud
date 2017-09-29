@@ -4,8 +4,11 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <memory>
+#include <vector>
+#include <unordered_map>
 
 #include "Camera.h"
+#include "Tile.h"
 
 class Renderer
 {
@@ -38,11 +41,11 @@ private:
 	SDL_Renderer* renderer;
 
 	//Current displayed texture
-	SDL_Texture* texture;
+	std::unordered_map<std::string, SDL_Texture*> textures;
 
 	std::shared_ptr<Camera> camera;
 
-	void renderTiles();
+	std::vector<Tile> tiles;
 };
 
 #endif //RENDERER_H

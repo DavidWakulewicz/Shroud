@@ -67,7 +67,8 @@ void Game::run()
 			std::ostringstream title;
 			title << "Shroud" << "  |  "
 			        << static_cast<int>(updates) << " UPS  "
-			        << frames << " FPS";
+			        << frames << " FPS "
+			        << delta * 1000.0f << " ms";
 			renderer->SetWindowTitle(title.str());
 
                         timer -= 1.0f;
@@ -105,10 +106,10 @@ void Game::update() {
 
 	keyboard->Update();
 
-	if (keyboard->Up)    camera->position.y -= 10;
-	if (keyboard->Down)  camera->position.y += 10; 
-	if (keyboard->Left)  camera->position.x -= 10; 
-	if (keyboard->Right) camera->position.x += 10;
+	if (keyboard->Up)    camera->Pos.y -= 10;
+	if (keyboard->Down)  camera->Pos.y += 10; 
+	if (keyboard->Left)  camera->Pos.x -= 10; 
+	if (keyboard->Right) camera->Pos.x += 10;
 
 	if (keyboard->Escape)     stop();
 	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
