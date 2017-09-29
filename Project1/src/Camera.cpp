@@ -25,9 +25,9 @@ void Camera::Update()
 	{
 		position.y = 0;
 	}
-	else if (position.y > (bounds.y * scale.y) - size.y)
+	else if (position.y >  bounds.y - (size.y / scale.y))
 	{
-		position.y = (bounds.y * scale.y) - size.y;
+		position.y = bounds.y - (size.y / scale.y);
 	}
 }
 

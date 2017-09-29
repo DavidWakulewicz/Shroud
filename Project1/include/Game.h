@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Renderer.h"
+#include "Keyboard.h"
 
 class Camera;
 class Renderer;
@@ -21,6 +22,7 @@ private:
 	bool isRunning;
 
 	std::shared_ptr<Camera> camera;
+	std::shared_ptr<Keyboard> keyboard;
 	std::unique_ptr<Renderer> renderer;
 
 	float delta = 0;
@@ -36,7 +38,7 @@ private:
 	const uint8_t UPDATES_PER_SECOND = 60;
 	const float SECONDS_PER_UPDATE = 1.0 / UPDATES_PER_SECOND;
 
-
+	void update();
 	void handleInput(SDL_Keycode);
 };
 #endif //GAME_H

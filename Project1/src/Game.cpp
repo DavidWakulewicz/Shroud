@@ -18,7 +18,8 @@ Game::Game()
 	}
 
 
-	camera = std::make_shared<Camera>();
+	camera   = std::make_shared<Camera>();
+	keyboard = std::make_shared<Keyboard>();
 	renderer = std::make_unique<Renderer>(camera);
 
 	//Load PNG texture
@@ -51,44 +52,15 @@ void Game::run()
 		updateDelta += delta;
 
 		while (updateDelta >= SECONDS_PER_UPDATE) {
-			// Future call to 'update' function that updates location of enemies, players, spells, etc.
+			// 'update' function that controls all updates (location of enemies, players, spells, input, etc.)
+			update();
 			updates++;
 			updateDelta -= SECONDS_PER_UPDATE;
-
-			//Event handler
-			SDL_Event e;
-
-			//Handle events on queue
-			while (SDL_PollEvent(&e) != 0)
-			{
-				switch(e.type)
-				{
-				case SDL_QUIT:
-					stop();
-					break;
-				case SDL_KEYDOWN:
-					handleInput(e.key.keysym.sym);
-					break;
-				case SDL_MOUSEWHEEL:
-					if (e.wheel.y < 0)
-					{
-						camera->ZoomIn();
-					}
-					else if (e.wheel.y > 0)
-					{
-						camera->ZoomOut();
-					}
-					break;
-				}
-			}
-
-			camera->Update();
 		}
 
-		// Future call to 'render' function here, will control all rendering (RenderClear, RenderCopy, RenderPresent will get moved there)
-		frames++;
-
+		//'render' function will control all rendering
 		renderer->Render();
+		frames++;
 
 		timer += delta;
 		if (timer > 1.0f) {
@@ -105,38 +77,43 @@ void Game::run()
 	}
 }
 
-void Game::handleInput(SDL_Keycode key)
-{
-	// PLAYER MOVEMENT TODO
-	// Should create a map of keys with true/false values
-	// default false
-	// set to true when key is pressed
-	// set to false when key is unpressed
-	// -- should prevent the ~second delay after a key is initially held down to signal continuous movement
-	// -- should also allow for 'double movement' when, for example, 'W' and 'A' keys are pressed together
-	// check true/false values when updating player position instead
-	switch (key)
+void Game::update() {
+
+	//Event handler
+	SDL_Event e;
+
+	//Handle events on queue
+	while (SDL_PollEvent(&e) != 0)
 	{
-	case SDLK_ESCAPE:
-		stop();
-		break;
-	case SDLK_w:
-		camera->position.y -= 10;
-		break;
-	case SDLK_s:
-		camera->position.y += 10;
-		break;
-	case SDLK_a:
-		camera->position.x -= 10;
-		break;
-	case SDLK_d:
-		camera->position.x += 10;
-		break;
-	case SDLK_f:
-		renderer->ToggleFullscreen();
-		break;
+		switch (e.type)
+		{
+		case SDL_QUIT:
+			stop();
+			break;
+		case SDL_MOUSEWHEEL:
+			if (e.wheel.y < 0)
+			{
+				camera->ZoomIn();
+			}
+			else if (e.wheel.y > 0)
+			{
+				camera->ZoomOut();
+			}
+			break;
+		}
 	}
-	return;
+
+	keyboard->Update();
+
+	if (keyboard->Up)    camera->position.y -= 10;
+	if (keyboard->Down)  camera->position.y += 10; 
+	if (keyboard->Left)  camera->position.x -= 10; 
+	if (keyboard->Right) camera->position.x += 10;
+
+	if (keyboard->Escape)     stop();
+	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
+
+	camera->Update();
 }
 
 void Game::stop()
