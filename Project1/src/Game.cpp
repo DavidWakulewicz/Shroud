@@ -95,7 +95,8 @@ void Game::run()
 			std::ostringstream title;
 			title << "Shroud" << "  |  "
 			        << static_cast<int>(updates) << " UPS  "
-			        << frames << " FPS";
+			        << frames << " FPS "
+			        << delta * 1000.0f << " ms";
 			renderer->SetWindowTitle(title.str());
 
                         timer -= 1.0f;
@@ -121,16 +122,16 @@ void Game::handleInput(SDL_Keycode key)
 		stop();
 		break;
 	case SDLK_w:
-		camera->position.y -= 10;
+		camera->Pos.y -= 10;
 		break;
 	case SDLK_s:
-		camera->position.y += 10;
+		camera->Pos.y += 10;
 		break;
 	case SDLK_a:
-		camera->position.x -= 10;
+		camera->Pos.x -= 10;
 		break;
 	case SDLK_d:
-		camera->position.x += 10;
+		camera->Pos.x += 10;
 		break;
 	case SDLK_f:
 		renderer->ToggleFullscreen();

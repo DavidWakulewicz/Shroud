@@ -30,10 +30,10 @@ public:
 	Camera();
 	Camera(int64_t, int64_t);
 
-	Point<int64_t> position;
-	Point<float> scale;
-	Point<int64_t> bounds;
-	Point<int64_t> size;
+	Point<int64_t> Pos;
+	Point<float> Scale;
+	Point<int64_t> Bounds;
+	Point<int64_t> Size;
 
 	void Update();
 	void ZoomIn();

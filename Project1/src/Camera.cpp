@@ -1,56 +1,56 @@
 #include "Camera.h"
 
 Camera::Camera()
-	: position({0, 0}), scale({1.0f, 1.0f}), bounds({640, 480})
+	: Pos({0, 0}), Scale({1.0f, 1.0f}), Bounds({640, 480})
 {
 }
 
 Camera::Camera(int64_t x, int64_t y)
-	: position({x, y}), scale({1.0f, 1.0f}), bounds({640, 480})
+	: Pos({x, y}), Scale({1.0f, 1.0f}), Bounds({640, 480})
 {
 }
 
 void Camera::Update()
 {
-	if (position.x < 0)
+	if (Pos.x < 0)
 	{
-		position.x = 0;
+		Pos.x = 0;
 	}
-	else if (position.x > bounds.x - (size.x / scale.x))
+	else if (Pos.x > Bounds.x - (Size.x / Scale.x))
 	{
-		position.x = bounds.x - (size.x / scale.x);
+		Pos.x = Bounds.x - (Size.x / Scale.x);
 	}
 
-	if (position.y < 0)
+	if (Pos.y < 0)
 	{
-		position.y = 0;
+		Pos.y = 0;
 	}
-	else if (position.y > (bounds.y * scale.y) - size.y)
+	else if (Pos.y > Bounds.y - (Size.y / Scale.y))
 	{
-		position.y = (bounds.y * scale.y) - size.y;
+		Pos.y = Bounds.y - (Size.y / Scale.y);
 	}
 }
 
 void Camera::ZoomIn()
 {
-	if (scale.x > 0.5f)
+	if (Scale.x > 0.5f)
 	{
-		scale.x -= 0.05f;
+		Scale.x -= 0.05f;
 	}
-	if (scale.y > 0.5f)
+	if (Scale.y > 0.5f)
 	{
-		scale.y -= 0.05f;
+		Scale.y -= 0.05f;
 	}
 }
 
 void Camera::ZoomOut()
 {
-	if (scale.x < 3.0f)
+	if (Scale.x < 3.0f)
 	{
-		scale.x += 0.05f;
+		Scale.x += 0.05f;
 	}
-	if (scale.y < 3.0f)
+	if (Scale.y < 3.0f)
 	{
-		scale.y += 0.05f;
+		Scale.y += 0.05f;
 	}
 }
