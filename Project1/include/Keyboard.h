@@ -9,13 +9,13 @@ public:
 	Keyboard();
 	~Keyboard();
 
-	int8_t up;
-	int8_t down;
-	int8_t left;
-	int8_t right;
+	bool up;
+	bool down;
+	bool left;
+	bool right;
 
-	int8_t fullscreen;
-	int8_t escape;
+	bool fullscreen;
+	bool escape;
 
 	void Update();
 
