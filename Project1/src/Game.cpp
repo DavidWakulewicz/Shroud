@@ -105,7 +105,7 @@ void Game::update() {
 
 	keyboard->Update();
 
-	if (keyboard->up)	 camera->position.y -= 10;
+	if (keyboard->up)    camera->position.y -= 10;
 	if (keyboard->down)  camera->position.y += 10; 
 	if (keyboard->left)  camera->position.x -= 10; 
 	if (keyboard->right) camera->position.x += 10;
