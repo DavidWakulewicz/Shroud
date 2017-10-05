@@ -29,6 +29,18 @@ Game::Game()
 		std::cout << "Failed to load texture image!" << std::endl;
 		exit(1);
 	}
+	texture = renderer->loadTexture("res/tiles/SpawnTile.png");
+	if (texture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		exit(1);
+	}
+	texture = renderer->loadTexture("res/tiles/FootStepNorth.png");
+	if (texture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		exit(1);
+	}
 
 	//Main loop flag
 	isRunning = true;

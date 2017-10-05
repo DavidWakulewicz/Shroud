@@ -3,7 +3,7 @@ CLIENT_BUILD = Project1/build
 CLIENT_SRC = Project1/src
 CLIENT_BIN = Project1/bin
 
-CLIENT_SRCS = Keyboard.cpp Tile.cpp Camera.cpp Game.cpp Renderer.cpp main.cpp
+CLIENT_SRCS = World.cpp Keyboard.cpp Tile.cpp Camera.cpp Game.cpp Renderer.cpp main.cpp
 CLIENT_SRCS := $(CLIENT_SRCS:%.cpp=$(CLIENT_SRC)/%.cpp)
 
 CLIENT_OBJS := $(CLIENT_SRCS:$(CLIENT_SRC)%.cpp=$(CLIENT_BUILD)%.o)
@@ -62,7 +62,7 @@ $(CLIENT_BUILD)/%.o: $(CLIENT_SRC)/%.cpp $(CLIENT_DEPDIR)/%.d
 
 
 debug: $(CLIENT_OBJS)
-	$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) -O3 -g -o $(CLIENT_BINARY_PATH)
+	$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) -g -o $(CLIENT_BINARY_PATH)
 
 run:
 	cd Project1 && $(CLIENT_RUN_COMMAND)

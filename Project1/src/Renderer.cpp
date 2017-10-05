@@ -41,8 +41,10 @@ Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
 
 	isFullscreen = false;
 
+	world = std::make_unique<World>(window);
+
 	camera->Scale.Set(2.0f, 2.0f);
-	camera->Bounds.Set(WORLD_WIDTH, WORLD_HEIGHT);
+	camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
 	camera->Size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
 }
@@ -68,7 +70,7 @@ void Renderer::Render()
 	SDL_Rect dRect;
 
 	//Render texture to screen
-	for (auto tile : tiles)
+	for (auto tile : world->Tiles)
 	{
 		dRect.x = tile.Pos.x - camera->Pos.x;
 		dRect.y = tile.Pos.y - camera->Pos.y;
@@ -82,8 +84,6 @@ void Renderer::Render()
 		{
 			SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
 		}
-
-
 	}
 
 	//Update screen
@@ -113,18 +113,6 @@ SDL_Texture* Renderer::loadTexture(std::string path)
 
 		//Get rid of old loaded surface
 		SDL_FreeSurface(loadedSurface);
-	}
-
-	for (int x = 0; x < WORLD_WIDTH; x += Tile::WIDTH) {
-		for (int y = 0; y < WORLD_HEIGHT; y += Tile::HEIGHT) {
-			uint64_t xPos = x - camera->Pos.x;
-			uint64_t yPos = y - camera->Pos.y;
-
-			Tile tile(path);
-			tile.Pos.x = xPos;
-			tile.Pos.y = yPos;
-			tiles.push_back(tile);
-		}
 	}
 
 	return textures[path];
