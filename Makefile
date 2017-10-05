@@ -57,7 +57,7 @@ $(CLIENT_BUILD)\\%.o: $(CLIENT_SRC)\%.cpp $(CLIENT_DEPDIR)\%.d
 
 $(CLIENT_BUILD)/%.o: $(CLIENT_SRC)/%.cpp
 $(CLIENT_BUILD)/%.o: $(CLIENT_SRC)/%.cpp $(CLIENT_DEPDIR)/%.d
-	$(CXX) $(CLIENT_DEPFLAGS) $(CPPFLAGS) -o $@ -c $< -O3
+	$(CXX) $(CLIENT_DEPFLAGS) $(CPPFLAGS) -o $@ -c $<
 	$(CLIENT_POSTCOMPILE)
 
 
