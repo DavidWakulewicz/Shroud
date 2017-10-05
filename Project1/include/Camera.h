@@ -3,32 +3,16 @@
 
 #include <cstdint>
 #include <ostream>
+#include <memory>
 
-template <typename T>
-struct Point
-{
-public:
-	T x;
-	T y;
-
-	void Set(T x, T y)
-	{
-		this->x = x;
-		this->y = y;
-	}
-
-	friend std::ostream& operator<<(std::ostream& os, const Point& p)
-	{
-		os << "<" << p.x << ", " << p.y << ">";
-		return os;
-	}
-};
+#include "Point.h"
+#include "Player.h"
 
 class Camera
 {
 public:
-	Camera();
-	Camera(int64_t, int64_t);
+	Camera(std::shared_ptr<Player>);
+	Camera(std::shared_ptr<Player>, int64_t, int64_t);
 
 	Point<int64_t> Pos;
 	Point<float> Scale;
@@ -39,6 +23,7 @@ public:
 	void ZoomIn();
 	void ZoomOut();
 private:
+	std::shared_ptr<Player> player;
 };
 
 #endif // CAMERA_H
