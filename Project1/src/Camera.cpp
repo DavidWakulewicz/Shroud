@@ -1,17 +1,19 @@
 #include "Camera.h"
 
-Camera::Camera()
-	: Pos({0, 0}), Scale({1.0f, 1.0f}), Bounds({640, 480})
+Camera::Camera(std::shared_ptr<Player> player)
+	: Pos({0, 0}), Scale({1.0f, 1.0f}), Bounds({640, 480}), player(player)
 {
 }
 
-Camera::Camera(int64_t x, int64_t y)
-	: Pos({x, y}), Scale({1.0f, 1.0f}), Bounds({640, 480})
+Camera::Camera(std::shared_ptr<Player> player, int64_t x, int64_t y)
+	: Pos({x, y}), Scale({1.0f, 1.0f}), Bounds({640, 480}), player(player)
 {
 }
 
 void Camera::Update()
 {
+	this->Pos = player->Pos;
+
 	if (Pos.x < 0)
 	{
 		Pos.x = 0;
