@@ -18,8 +18,9 @@ Game::Game()
 	}
 
 
-	camera   = std::make_shared<Camera>();
 	keyboard = std::make_shared<Keyboard>();
+	player   = std::make_shared<Player>(keyboard);
+	camera   = std::make_shared<Camera>(player);
 	renderer = std::make_unique<Renderer>(camera);
 
 	//Load PNG texture
@@ -106,14 +107,10 @@ void Game::update() {
 
 	keyboard->Update();
 
-	if (keyboard->Up)    camera->Pos.y -= 10;
-	if (keyboard->Down)  camera->Pos.y += 10; 
-	if (keyboard->Left)  camera->Pos.x -= 10; 
-	if (keyboard->Right) camera->Pos.x += 10;
-
 	if (keyboard->Escape)     stop();
 	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
 
+	player->Update();
 	camera->Update();
 }
 

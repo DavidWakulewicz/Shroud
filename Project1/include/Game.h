@@ -6,8 +6,10 @@
 
 #include "Renderer.h"
 #include "Keyboard.h"
+#include "Player.h"
 
 class Camera;
+class Player;
 class Renderer;
 
 class Game
@@ -22,6 +24,7 @@ private:
 	bool isRunning;
 
 	std::shared_ptr<Camera> camera;
+	std::shared_ptr<Player> player;
 	std::shared_ptr<Keyboard> keyboard;
 	std::unique_ptr<Renderer> renderer;
 
