@@ -9,6 +9,7 @@
 
 #include "Camera.h"
 #include "Tile.h"
+#include "World.h"
 
 class Renderer
 {
@@ -30,10 +31,9 @@ public:
 	const int64_t SCREEN_WIDTH = 640;
 	const int64_t SCREEN_HEIGHT = 480;
 
-	const int64_t WORLD_WIDTH = SCREEN_WIDTH * 5;
-	const int64_t WORLD_HEIGHT = SCREEN_HEIGHT * 5;
-
 private:
+	std::unique_ptr<World> world;
+
 	//The window we'll be rendering to
 	SDL_Window* window;
 
