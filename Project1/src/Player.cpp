@@ -3,12 +3,12 @@
 #include <SDL2/SDL_image.h>
 
 Player::Player(std::shared_ptr<Keyboard> keyboard)
-	: Pos({0, 0}), Scale({1.0f, 1.0f}), Bounds({640, 480}), keyboard(keyboard)
+	: Pos({0, 0}), Scale({1.0f, 1.0f}), Bounds({50, 50}), keyboard(keyboard)
 {
 }
 
 Player::Player(std::shared_ptr<Keyboard> keyboard, int64_t x, int64_t y)
-	: Pos({x, y}), Scale({1.0f, 1.0f}), Bounds({640, 480}), keyboard(keyboard)
+	: Pos({x, y}), Scale({1.0f, 1.0f}), Bounds({50, 50}), keyboard(keyboard)
 {
 }
 

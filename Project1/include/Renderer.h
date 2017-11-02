@@ -14,7 +14,7 @@
 class Renderer
 {
 public:
-	Renderer(std::shared_ptr<Camera>);
+	Renderer(std::shared_ptr<Camera>, std::shared_ptr<Player>);
 	~Renderer();
 
 	void Render();
@@ -44,6 +44,7 @@ private:
 	std::unordered_map<std::string, SDL_Texture*> textures;
 
 	std::shared_ptr<Camera> camera;
+	std::shared_ptr<Player> player;
 
 	std::vector<Tile> tiles;
 };

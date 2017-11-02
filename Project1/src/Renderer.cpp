@@ -3,7 +3,8 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
-Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
+//Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
+Renderer::Renderer(std::shared_ptr<Camera> camera, std::shared_ptr<Player> player) : camera(camera), player(player)
 {
 	// Create window
 	// SDL_WINDOW_SHOWN flag is ignored according to document.
@@ -85,6 +86,15 @@ void Renderer::Render()
 			SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
 		}
 	}
+
+	// Render player to screen
+	SDL_Rect r;
+	r.x = player->Pos.x - camera->Pos.x;
+	r.y = player->Pos.y - camera->Pos.y;
+	r.w = 50;
+	r.h = 50;
+	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+	SDL_RenderFillRect(renderer, &r);
 
 	//Update screen
 	SDL_RenderPresent(renderer);
