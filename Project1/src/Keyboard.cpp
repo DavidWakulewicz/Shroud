@@ -2,16 +2,6 @@
 
 #include <SDL2/SDL.h>
 
-Keyboard::Keyboard()
-{
-	
-}
-
-Keyboard::~Keyboard()
-{
-
-}
-
 void Keyboard::Update()
 {
 	const uint8_t *state = SDL_GetKeyboardState(NULL);
@@ -21,6 +11,7 @@ void Keyboard::Update()
 	Down  = state[SDL_GetScancodeFromKey(SDLK_s)];
 	Left  = state[SDL_GetScancodeFromKey(SDLK_a)];
 	Right = state[SDL_GetScancodeFromKey(SDLK_d)];
+	Q = state[SDL_GetScancodeFromKey(SDLK_q)];
 
 	// Misc
 	Escape     = state[SDL_GetScancodeFromKey(SDLK_ESCAPE)];

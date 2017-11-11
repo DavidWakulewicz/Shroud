@@ -13,6 +13,8 @@ Camera::Camera(std::shared_ptr<Player> player, int64_t x, int64_t y)
 void Camera::Update()
 {
 	this->Pos = player->Pos;
+	this->Pos.x -= Size.x / 2;
+	this->Pos.y -= Size.y / 2;
 
 	if (Pos.x < 0)
 	{

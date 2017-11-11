@@ -4,13 +4,11 @@
 #include <SDL2/SDL.h>
 #include <memory>
 
-#include "Renderer.h"
-#include "Keyboard.h"
-#include "Player.h"
-
 class Camera;
 class Player;
+class Keyboard;
 class Renderer;
+class StateManager;
 
 class Game
 {
@@ -27,6 +25,7 @@ private:
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Keyboard> keyboard;
 	std::unique_ptr<Renderer> renderer;
+	std::unique_ptr<StateManager> stateManager;
 
 	float delta = 0;
 	float updateDelta = 0;

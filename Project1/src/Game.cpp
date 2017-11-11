@@ -4,6 +4,12 @@
 #include <sstream>
 
 #include "Renderer.h"
+#include "Player.h"
+#include "Keyboard.h"
+#include "Camera.h"
+
+#include "StateManager.h"
+#include "GameState.h"
 
 Game::Game()
 {
@@ -14,7 +20,8 @@ Game::Game()
 
 	//Set texture filtering to linear
 	if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-		std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
+		std::cout << "Warning: Linear texture filtering not enabled!"
+			<< std::endl;
 	}
 
 
@@ -45,6 +52,10 @@ Game::Game()
 
 	//Main loop flag
 	isRunning = true;
+
+	stateManager->Add<GameState>();
+	stateManager->Add<MenuState>();
+	stateManager->Change<GameState>();
 }
 
 Game::~Game()
@@ -67,6 +78,7 @@ void Game::run()
 		while (updateDelta >= SECONDS_PER_UPDATE) {
 			// 'update' function that controls all updates (location of enemies, players, spells, input, etc.)
 			update();
+			smanager.Update();
 			updates++;
 			updateDelta -= SECONDS_PER_UPDATE;
 		}
@@ -121,9 +133,16 @@ void Game::update() {
 
 	if (keyboard->Escape)     stop();
 	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
+	if (keyboard->Q && stateManager->Is<MenuState>())
+	{
+		stateManager->Change<GameState>();
+	}
+	else if (keyboard->Q && stateManager->Is<GameState>())
+	{
+		stateManager->Change<MenuState>();
+	}
 
-	player->Update();
-	camera->Update();
+	stateManager->Update();
 }
 
 void Game::stop()
