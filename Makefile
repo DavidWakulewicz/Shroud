@@ -64,6 +64,9 @@ $(CLIENT_BUILD)/%.o: $(CLIENT_SRC)/%.cpp $(CLIENT_DEPDIR)/%.d
 debug: $(CLIENT_OBJS)
 	$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) -g -o $(CLIENT_BINARY_PATH)
 
+browser: $(CLIENT_SRCS)
+	emcc $(CLIENT_SRCS) -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file Project1/res@res -o main.html $(CPPFLAGS)
+
 run:
 	cd Project1 && $(CLIENT_RUN_COMMAND)
 

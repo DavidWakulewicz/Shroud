@@ -1,5 +1,9 @@
 #include "Game.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include <iostream>
 #include <sstream>
 
@@ -55,7 +59,15 @@ Game::~Game()
 void Game::run()
 {
 	//While application is running
+#if __EMSCRIPTEN__
+        if (!isRunning)
+        {
+                emscripten_cancel_main_loop();
+        }
+        else
+#else
 	while (isRunning)
+#endif
 	{
 		// Timer calculations
 		current = SDL_GetTicks();
