@@ -25,7 +25,7 @@ Game::Game()
 	keyboard = std::make_shared<Keyboard>();
 	player   = std::make_shared<Player>(keyboard);
 	camera   = std::make_shared<Camera>(player);
-	renderer = std::make_unique<Renderer>(camera);
+	renderer = std::make_unique<Renderer>(camera, player);
 
 	//Load PNG texture
 	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
