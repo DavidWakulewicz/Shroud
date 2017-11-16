@@ -91,9 +91,10 @@ void Renderer::Render()
 	SDL_Rect r;
 	r.x = player->Pos.x - camera->Pos.x;
 	r.y = player->Pos.y - camera->Pos.y;
-	r.w = 50;
-	r.h = 50;
-	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+	r.w = player->Bounds.x;
+	r.h = player->Bounds.y;
+	SDL_SetRenderDrawColor(renderer, 156, 219, 94, 175);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	SDL_RenderFillRect(renderer, &r);
 
 	//Update screen
