@@ -42,10 +42,8 @@ Renderer::Renderer(std::shared_ptr<Camera> camera, std::shared_ptr<Player> playe
 
 	isFullscreen = false;
 
-	world = std::make_unique<World>(window);
 
 	camera->Scale.Set(2.0f, 2.0f);
-	camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
 	camera->Size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
 }
@@ -61,32 +59,31 @@ Renderer::~Renderer()
 	IMG_Quit();
 }
 
-void Renderer::Render()
+void Renderer::Clear() 
 {
-	//Clear screen
 	SDL_RenderClear(renderer);
+}
 
-	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
-
+void Renderer::AddToFrame(Tile tile) 
+{
 	SDL_Rect dRect;
 
-	//Render texture to screen
-	for (auto tile : world->Tiles)
+	dRect.x = tile.Pos.x - camera->Pos.x;
+	dRect.y = tile.Pos.y - camera->Pos.y;
+	dRect.w = tile.Bounds.x;
+	dRect.h = tile.Bounds.y;
+
+	if (dRect.x > -(tile.Bounds.x / camera->Scale.x * 3) &&
+	    dRect.y > -(tile.Bounds.y / camera->Scale.y * 3) && 
+	    dRect.x < (SCREEN_WIDTH / camera->Scale.x) + (tile.Bounds.x / camera->Scale.x * 3) &&
+	    dRect.y < (SCREEN_HEIGHT / camera->Scale.y) + (tile.Bounds.y / camera->Scale.y * 3))
 	{
-		dRect.x = tile.Pos.x - camera->Pos.x;
-		dRect.y = tile.Pos.y - camera->Pos.y;
-		dRect.w = tile.Bounds.x;
-		dRect.h = tile.Bounds.y;
-
-		if (dRect.x > -(tile.Bounds.x / camera->Scale.x * 3) &&
-		    dRect.y > -(tile.Bounds.y / camera->Scale.y * 3) && 
-		    dRect.x < (SCREEN_WIDTH / camera->Scale.x) + (tile.Bounds.x / camera->Scale.x * 3) &&
-		    dRect.y < (SCREEN_HEIGHT / camera->Scale.y) + (tile.Bounds.y / camera->Scale.y * 3))
-		{
-			SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
-		}
+		SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
 	}
+}
 
+void Renderer::Render()
+{
 	// Render player to screen
 	SDL_Rect r;
 	r.x = player->Pos.x - camera->Pos.x;
@@ -98,6 +95,7 @@ void Renderer::Render()
 	SDL_RenderFillRect(renderer, &r);
 
 	//Update screen
+	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
 	SDL_RenderPresent(renderer);
 }
 
@@ -160,4 +158,8 @@ void Renderer::ToggleFullscreen(uint32_t flag)
 void Renderer::SetWindowTitle(std::string title)
 {
 	SDL_SetWindowTitle(window, title.c_str());
+}
+
+uint32_t Renderer::GetWindowFormat() {
+	return SDL_GetWindowPixelFormat(window);
 }
