@@ -5,9 +5,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-World::World(SDL_Window* window)
+World::World(std::shared_ptr<Renderer> renderer) : renderer(renderer)
 {
-	uint32_t format = SDL_GetWindowPixelFormat(window);
+	uint32_t format = renderer->GetWindowFormat();
 	SDL_PixelFormat* mappingFormat = SDL_AllocFormat(format);
 
 	uint32_t wall = SDL_MapRGB(mappingFormat, 0x00, 0x00, 0x00);
@@ -63,4 +63,16 @@ World::World(SDL_Window* window)
 	}
 
 	SDL_FreeSurface(formattedSurface);
+}
+
+// Multiple maps? Potentially split into smaller 'Map' classes
+// Have something to track the 'active map' then the for loop for the tiles would just be 'for tile : activeMap.Tiles) {...'
+void World::Render() {
+	renderer->Clear();
+	
+	for (auto tile : Tiles) {
+		renderer->AddToFrame(tile);
+	}
+
+	renderer->Render();
 }

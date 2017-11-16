@@ -21,11 +21,13 @@ Game::Game()
 		std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
 	}
 
-
 	keyboard = std::make_shared<Keyboard>();
 	player   = std::make_shared<Player>(keyboard);
 	camera   = std::make_shared<Camera>(player);
-	renderer = std::make_unique<Renderer>(camera, player);
+	renderer = std::make_shared<Renderer>(camera, player);
+	world    = std::make_unique<World>(renderer);
+
+	camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
 
 	//Load PNG texture
 	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
@@ -84,7 +86,8 @@ void Game::run()
 		}
 
 		//'render' function will control all rendering
-		renderer->Render();
+//		renderer->Render();
+		world->Render();
 		frames++;
 
 		timer += delta;

@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "Keyboard.h"
 #include "Player.h"
+#include "World.h"
 
 class Camera;
 class Player;
@@ -26,7 +27,8 @@ private:
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Keyboard> keyboard;
-	std::unique_ptr<Renderer> renderer;
+	std::shared_ptr<Renderer> renderer;
+	std::unique_ptr<World> world;
 
 	float delta = 0;
 	float updateDelta = 0;
