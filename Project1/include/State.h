@@ -2,14 +2,16 @@
 #define STATE_H
 
 #include <memory>
+#include <iostream>
 
 class Game;
 
 class State
 {
 public:
-	State(std::weak_ptr<Game> game) : game(game) {};
-	virtual ~State() = 0;
+	State(std::shared_ptr<Game> game) : game(game) {};
+
+	//virtual ~State() = 0;
 
 	virtual void Initialize() = 0;
 	virtual void Destroy() = 0;
@@ -20,10 +22,10 @@ public:
 	virtual void Update() = 0;
 	virtual void Render() = 0;
 
-private:
-	std::weak_ptr<Game> game;
+protected:
+	std::shared_ptr<Game> game;
 };
 
-inline State::~State() {}
+//inline State::~State() {}
 
 #endif //STATE_H

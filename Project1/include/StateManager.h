@@ -10,13 +10,15 @@
 
 #define NOSTATE std::type_index(typeid(void))
 
+class Game;
+
 class StateManager
 {
 public:
 	StateManager() : currentState(NOSTATE) {};
 
 	template <class T>
-	void Add();
+	void Add(std::shared_ptr<Game> game);
 
 	template <class T>
 	void Change();
@@ -33,10 +35,11 @@ private:
 };
 
 template <class T>
-void StateManager::Add()
+void StateManager::Add(std::shared_ptr<Game> game)
 {
 	auto index = std::type_index(typeid(T));
-	auto state = std::make_unique<T>();
+	std::cout << index.name() << std::endl;
+	auto state = std::make_unique<T>(game);
 	states[index] = std::move(state);
 }
 

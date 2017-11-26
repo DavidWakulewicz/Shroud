@@ -8,7 +8,6 @@
 #include "Keyboard.h"
 #include "Camera.h"
 
-#include "StateManager.h"
 #include "GameState.h"
 
 Game::Game()
@@ -25,10 +24,11 @@ Game::Game()
 	}
 
 
-	keyboard = std::make_shared<Keyboard>();
-	player   = std::make_shared<Player>(keyboard);
-	camera   = std::make_shared<Camera>(player);
-	renderer = std::make_unique<Renderer>(camera);
+	keyboard     = std::make_shared<Keyboard>();
+	player       = std::make_shared<Player>(keyboard);
+	camera       = std::make_shared<Camera>(player);
+	renderer     = std::make_unique<Renderer>(camera);
+	stateManager = std::make_unique<StateManager>();
 
 	//Load PNG texture
 	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
@@ -52,10 +52,6 @@ Game::Game()
 
 	//Main loop flag
 	isRunning = true;
-
-	stateManager->Add<GameState>();
-	stateManager->Add<MenuState>();
-	stateManager->Change<GameState>();
 }
 
 Game::~Game()
@@ -63,8 +59,12 @@ Game::~Game()
 	SDL_Quit();
 }
 
-void Game::run()
+void Game::Run()
 {
+	stateManager->Add<GameState>(shared_from_this());
+	stateManager->Add<MenuState>(shared_from_this());
+	stateManager->Change<GameState>();
+
 	//While application is running
 	while (isRunning)
 	{
@@ -78,7 +78,7 @@ void Game::run()
 		while (updateDelta >= SECONDS_PER_UPDATE) {
 			// 'update' function that controls all updates (location of enemies, players, spells, input, etc.)
 			update();
-			smanager.Update();
+			stateManager->Update();
 			updates++;
 			updateDelta -= SECONDS_PER_UPDATE;
 		}
@@ -114,7 +114,7 @@ void Game::update() {
 		switch (e.type)
 		{
 		case SDL_QUIT:
-			stop();
+			Stop();
 			break;
 		case SDL_MOUSEWHEEL:
 			if (e.wheel.y < 0)
@@ -131,7 +131,7 @@ void Game::update() {
 
 	keyboard->Update();
 
-	if (keyboard->Escape)     stop();
+	if (keyboard->Escape)     Stop();
 	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
 	if (keyboard->Q && stateManager->Is<MenuState>())
 	{
@@ -145,7 +145,7 @@ void Game::update() {
 	stateManager->Update();
 }
 
-void Game::stop()
+void Game::Stop()
 {
 	isRunning = false;
 }

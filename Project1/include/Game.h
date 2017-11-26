@@ -4,20 +4,24 @@
 #include <SDL2/SDL.h>
 #include <memory>
 
+#include "StateManager.h"
+
 class Camera;
 class Player;
 class Keyboard;
 class Renderer;
-class StateManager;
 
-class Game
+class Game : public std::enable_shared_from_this<Game>
 {
 public:
 	Game();
 	~Game();
 
-	void run();
-	void stop();
+	void Run();
+	void Stop();
+
+	template <typename T>
+	void SetState();
 private:
 	bool isRunning;
 
@@ -43,4 +47,11 @@ private:
 	void update();
 	void handleInput(SDL_Keycode);
 };
+
+template <typename T>
+void Game::SetState()
+{
+	stateManager->Change<T>();
+}
+
 #endif //GAME_H

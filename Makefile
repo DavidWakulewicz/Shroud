@@ -52,17 +52,17 @@ endif
 
 $(CLIENT_BUILD)\\%.o: $(CLIENT_SRC)\%.cpp
 $(CLIENT_BUILD)\\%.o: $(CLIENT_SRC)\%.cpp $(CLIENT_DEPDIR)\%.d
-	$(CXX) $(CLIENT_DEPFLAGS) $(CPPFLAGS) -o $@ -c $<
+	$(CXX) $(CLIENT_DEPFLAGS) $(CPPFLAGS) -o $@ -c $< -g -O0
 	$(CLIENT_POSTCOMPILE)
 
 $(CLIENT_BUILD)/%.o: $(CLIENT_SRC)/%.cpp
 $(CLIENT_BUILD)/%.o: $(CLIENT_SRC)/%.cpp $(CLIENT_DEPDIR)/%.d
-	$(CXX) $(CLIENT_DEPFLAGS) $(CPPFLAGS) -o $@ -c $< -O3
+	$(CXX) $(CLIENT_DEPFLAGS) $(CPPFLAGS) -o $@ -c $< -g -O0
 	$(CLIENT_POSTCOMPILE)
 
 
 debug: $(CLIENT_OBJS)
-	$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) -g -o $(CLIENT_BINARY_PATH)
+	$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) -g -O0 -o $(CLIENT_BINARY_PATH)
 
 run:
 	cd Project1 && $(CLIENT_RUN_COMMAND)

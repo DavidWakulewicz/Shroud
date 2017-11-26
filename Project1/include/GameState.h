@@ -7,6 +7,7 @@
 #include "Keyboard.h"
 #include "Renderer.h"
 #include "Player.h"
+#include "Game.h"
 
 class Camera;
 class Player;
@@ -18,7 +19,9 @@ class MenuState;
 class GameState : public State
 {
 public:
-	~GameState() {};
+	using State::State;
+
+	//~GameState() {};
 
 	void Initialize() {};
 	void Destroy() {};
@@ -28,13 +31,14 @@ public:
 
 	void Update()
 	{
-		player->Update();
-		camera->Update();
+		std::cout << "GameState" << std::endl;
+		//player->Update();
+		//camera->Update();
 
-		if (keyboard->Q)
-		{
-			game->SetState<MenuState>();
-		}
+		//if (keyboard->Q)
+		//{
+		//	game->SetState<MenuState>();
+		//}
 	};
 	void Render() {};
 
@@ -48,7 +52,9 @@ private:
 class MenuState : public State
 {
 public:
-	~MenuState() {};
+	using State::State;
+
+	//~MenuState() {};
 
 	void Initialize() {};
 	void Destroy() {};
@@ -58,12 +64,16 @@ public:
 
 	void Update()
 	{
-		if (keyboard->Q)
-		{
-			game->SetState<GameState>();
-		}
+		std::cout << "MenuState" << std::endl;
+		//if (keyboard->Q)
+		//{
+		//	game->SetState<GameState>();
+		//}
 	};
 	void Render() {};
+
+private:
+	std::shared_ptr<Keyboard> keyboard;
 };
 
 #endif //GAME_STATE_H

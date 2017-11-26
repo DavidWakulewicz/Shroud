@@ -1,8 +1,10 @@
+#include <memory>
+
 #include "Game.h"
 
 int main(int argc, char* args[]) {
-	Game game;
-	game.run();
+	auto game = std::make_shared<Game>();
+	game->Run();
 
 	return 0;
 }
