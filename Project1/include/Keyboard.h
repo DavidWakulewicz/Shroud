@@ -11,6 +11,8 @@ public:
 	bool Left;
 	bool Right;
 	bool Q;
+	bool Enter;
+	bool Tab;
 
 	bool Fullscreen;
 	bool Escape;

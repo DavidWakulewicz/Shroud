@@ -2,11 +2,11 @@
 
 #include "State.h"
 
-void StateManager::Update()
+void StateManager::Update(float delta)
 {
 	if (currentState == NOSTATE) { return; }
 
-	states[currentState]->Update();
+	states[currentState]->Update(delta);
 }
 
 void StateManager::Render()

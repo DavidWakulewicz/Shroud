@@ -5,7 +5,6 @@
 #endif
 
 #include <iostream>
-#include <sstream>
 
 #include "Renderer.h"
 #include "Player.h"
@@ -28,34 +27,8 @@ Game::Game()
 	}
 
 
-	keyboard     = std::make_shared<Keyboard>();
-	player       = std::make_shared<Player>(keyboard);
-	camera       = std::make_shared<Camera>(player);
-	renderer     = std::make_shared<Renderer>(camera, player);
+	Key          = std::make_shared<Keyboard>();
 	stateManager = std::make_unique<StateManager>();
-	world        = std::make_unique<World>(renderer);
-
-	camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
-
-	//Load PNG texture
-	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
-	if (texture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		exit(1);
-	}
-	texture = renderer->loadTexture("res/tiles/SpawnTile.png");
-	if (texture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		exit(1);
-	}
-	texture = renderer->loadTexture("res/tiles/FootStepNorth.png");
-	if (texture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		exit(1);
-	}
 
 	//Main loop flag
 	isRunning = true;
@@ -93,29 +66,10 @@ void Game::Run()
 		while (updateDelta >= SECONDS_PER_UPDATE) {
 			// 'update' function that controls all updates (location of enemies, players, spells, input, etc.)
 			update();
-			stateManager->Update();
-			updates++;
 			updateDelta -= SECONDS_PER_UPDATE;
 		}
 
-		//'render' function will control all rendering
-//		renderer->Render();
-		world->Render();
-		frames++;
-
-		timer += delta;
-		if (timer > 1.0f) {
-			std::ostringstream title;
-			title << "Shroud" << "  |  "
-			        << static_cast<int>(updates) << " UPS  "
-			        << frames << " FPS "
-			        << delta * 1000.0f << " ms";
-			renderer->SetWindowTitle(title.str());
-
-                        timer -= 1.0f;
-                        frames = 0;
-			updates = 0;
-		}
+		stateManager->Render();
 	}
 }
 
@@ -133,32 +87,20 @@ void Game::update() {
 			Stop();
 			break;
 		case SDL_MOUSEWHEEL:
-			if (e.wheel.y < 0)
-			{
-				camera->ZoomIn();
-			}
-			else if (e.wheel.y > 0)
-			{
-				camera->ZoomOut();
-			}
+			//if (e.wheel.y < 0)
+			//{
+			//	camera->ZoomIn();
+			//}
+			//else if (e.wheel.y > 0)
+			//{
+			//	camera->ZoomOut();
+			//}
 			break;
 		}
 	}
 
-	keyboard->Update();
-
-	if (keyboard->Escape)     Stop();
-	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
-	if (keyboard->Q && stateManager->Is<MenuState>())
-	{
-		stateManager->Change<GameState>();
-	}
-	else if (keyboard->Q && stateManager->Is<GameState>())
-	{
-		stateManager->Change<MenuState>();
-	}
-
-	stateManager->Update();
+	Key->Update();
+	stateManager->Update(SECONDS_PER_UPDATE);
 }
 
 void Game::Stop()

@@ -11,7 +11,9 @@ void Keyboard::Update()
 	Down  = state[SDL_GetScancodeFromKey(SDLK_s)];
 	Left  = state[SDL_GetScancodeFromKey(SDLK_a)];
 	Right = state[SDL_GetScancodeFromKey(SDLK_d)];
-	Q = state[SDL_GetScancodeFromKey(SDLK_q)];
+	Q     = state[SDL_GetScancodeFromKey(SDLK_q)];
+	Enter = state[SDL_GetScancodeFromKey(SDLK_RETURN)];
+	Tab   = state[SDL_GetScancodeFromKey(SDLK_TAB)];
 
 	// Misc
 	Escape     = state[SDL_GetScancodeFromKey(SDLK_ESCAPE)];

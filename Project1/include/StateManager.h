@@ -23,7 +23,7 @@ public:
 	template <class T>
 	void Change();
 
-	void Update();
+	void Update(float);
 	void Render();
 
 	template <class T>
@@ -38,8 +38,8 @@ template <class T>
 void StateManager::Add(std::shared_ptr<Game> game)
 {
 	auto index = std::type_index(typeid(T));
-	std::cout << index.name() << std::endl;
 	auto state = std::make_unique<T>(game);
+	state->Initialize();
 	states[index] = std::move(state);
 }
 
@@ -49,10 +49,10 @@ void StateManager::Change()
 	auto index = std::type_index(typeid(T));
 
 	if (states.find(index) == states.end()) { return; }
-	if (currentState != NOSTATE) { states[currentState]->Destroy(); }
+	if (currentState != NOSTATE) { states[currentState]->Suspend(); }
 
 	currentState = index;
-	states[currentState]->Initialize();
+	states[currentState]->Resume();
 }
 
 template <class T>
@@ -64,13 +64,3 @@ bool StateManager::Is()
 }
 
 #endif //STATE_MANAGER_H
-
-
-/*
- * game.AddState(new MenuState)
- * game.AddState(new GameState)
- *
- * game.ChangeState(State::Game)
- *
- *
- */

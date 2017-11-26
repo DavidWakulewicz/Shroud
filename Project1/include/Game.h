@@ -26,25 +26,18 @@ public:
 
 	template <typename T>
 	void SetState();
+
+	std::shared_ptr<Keyboard> Key;
 private:
 	bool isRunning;
 
-	std::shared_ptr<Camera> camera;
-	std::shared_ptr<Player> player;
-	std::shared_ptr<Keyboard> keyboard;
 	std::unique_ptr<StateManager> stateManager;
-	std::shared_ptr<Renderer> renderer;
-	std::unique_ptr<World> world;
 
 	float delta = 0;
 	float updateDelta = 0;
 	uint64_t current = 0;
 
-	uint8_t updates = 0;
-	uint16_t frames = 0;
-
 	uint64_t lastTime = SDL_GetTicks();
-	float timer = 0;
 
 	const uint8_t UPDATES_PER_SECOND = 60;
 	const float SECONDS_PER_UPDATE = 1.0 / UPDATES_PER_SECOND;

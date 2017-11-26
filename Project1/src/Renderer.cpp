@@ -3,6 +3,8 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
+Renderer::Renderer() {}
+
 //Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
 Renderer::Renderer(std::shared_ptr<Camera> camera, std::shared_ptr<Player> player) : camera(camera), player(player)
 {
