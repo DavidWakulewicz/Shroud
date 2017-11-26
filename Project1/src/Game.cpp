@@ -12,6 +12,7 @@
 #include "Camera.h"
 
 #include "GameState.h"
+#include "MenuState.h"
 
 Game::Game()
 {
@@ -31,6 +32,16 @@ Game::Game()
 	stateManager = std::make_unique<StateManager>();
 
 	//Main loop flag
+	isRunning = false;
+}
+
+void Game::Initalize()
+{
+	stateManager->Add<GameState>(shared_from_this());
+	stateManager->Add<MenuState>(shared_from_this());
+	stateManager->Change<GameState>();
+
+	//Main loop flag
 	isRunning = true;
 }
 
@@ -41,12 +52,8 @@ Game::~Game()
 
 void Game::Run()
 {
-	stateManager->Add<GameState>(shared_from_this());
-	stateManager->Add<MenuState>(shared_from_this());
-	stateManager->Change<GameState>();
-
 	//While application is running
-#if __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
         if (!isRunning)
         {
                 emscripten_cancel_main_loop();
@@ -55,7 +62,7 @@ void Game::Run()
 #else
 	while (isRunning)
 #endif
-	{
+        {
 		// Timer calculations
 		current = SDL_GetTicks();
 		delta = (current - lastTime) / 1000.0f;
@@ -78,6 +85,8 @@ void Game::update() {
 	//Event handler
 	SDL_Event e;
 
+	MouseWheel = 0;
+
 	//Handle events on queue
 	while (SDL_PollEvent(&e) != 0)
 	{
@@ -87,14 +96,7 @@ void Game::update() {
 			Stop();
 			break;
 		case SDL_MOUSEWHEEL:
-			//if (e.wheel.y < 0)
-			//{
-			//	camera->ZoomIn();
-			//}
-			//else if (e.wheel.y > 0)
-			//{
-			//	camera->ZoomOut();
-			//}
+			MouseWheel = e.wheel.y;
 			break;
 		}
 	}

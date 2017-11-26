@@ -9,14 +9,15 @@
 
 void mainLoop(void *g)
 {
-        ((Game *)g)->Run();
+	((Game*)g)->Run();
 }
 
 int main(int argc, char* args[]) {
 	auto game = std::make_shared<Game>();
+	game->Initalize();
 
 #ifdef __EMSCRIPTEN__
-        emscripten_set_main_loop_arg(mainLoop, &game, 0, 1);
+        emscripten_set_main_loop_arg(mainLoop, game.get(), 0, 1);
 #else
 	game->Run();
 #endif

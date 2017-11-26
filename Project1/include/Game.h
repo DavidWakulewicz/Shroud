@@ -27,7 +27,10 @@ public:
 	template <typename T>
 	void SetState();
 
+	void Initalize();
+
 	std::shared_ptr<Keyboard> Key;
+	int32_t MouseWheel;
 private:
 	bool isRunning;
 

@@ -14,8 +14,8 @@ ifeq ($(OS),Windows_NT)
 	RM = del /f
 
 	CXX = clang++
-	CPPFLAGS = -std=c++14 -I "Project1\include"
-	LDFLAGS = -std=c++14 -L "Project1\lib"
+	CPPFLAGS = -Wall -std=c++14 -I "Project1\include"
+	LDFLAGS = -Wall -std=c++14 -L "Project1\lib"
 	LDLIBS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 
 	CLIENT_SRCS := $(foreach src,$(CLIENT_SRCS),$(subst /src/,\src\,$(src)))
@@ -35,8 +35,8 @@ else
 	RM = rm -f
 
 	CXX = clang++
-	CPPFLAGS = -std=c++14 -I "Project1/include"
-	LDFLAGS = -std=c++14 -L "Project1/lib"
+	CPPFLAGS = -Wall -std=c++14 -I "Project1/include"
+	LDFLAGS = -Wall -std=c++14 -L "Project1/lib"
 	LDLIBS = -lSDL2main -lSDL2 -lSDL2_image
 
 	CLIENT_BINARY = Shroud
@@ -65,7 +65,7 @@ debug: $(CLIENT_OBJS)
 	$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) -g -O0 -o $(CLIENT_BINARY_PATH)
 
 browser: $(CLIENT_SRCS)
-	emcc $(CLIENT_SRCS) -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file Project1/res@res -o main.html $(CPPFLAGS)
+	emcc $(CLIENT_SRCS) -s USE_SDL=2 -s DEMANGLE_SUPPORT=1 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file Project1/res@res -o main.js $(CPPFLAGS)
 
 run:
 	cd Project1 && $(CLIENT_RUN_COMMAND)

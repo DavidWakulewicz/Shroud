@@ -12,7 +12,6 @@
 
 class Camera;
 class Player;
-class Keyboard;
 class Renderer;
 
 class MenuState;
@@ -78,6 +77,15 @@ public:
 			renderer->ToggleFullscreen();
 		}
 
+		if (game->MouseWheel < 0)
+		{
+			camera->ZoomIn();
+		}
+		else if (game->MouseWheel > 0)
+		{
+			camera->ZoomOut();
+		}
+
 		timer += delta;
 		if (timer > 1.0f) {
 			std::ostringstream title;
@@ -108,42 +116,6 @@ private:
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Renderer> renderer;
 	std::unique_ptr<World> world;
-};
-
-class MenuState : public State
-{
-public:
-	using State::State;
-
-	//~MenuState() {};
-
-	void Initialize()
-	{
-		renderer = std::make_shared<Renderer>();
-	};
-	void Destroy() {};
-
-	void Suspend() {};
-	void Resume() {};
-
-	void Update(float delta)
-	{
-		if (game->Key->Escape)
-		{
-			game->Stop();
-		}
-		else if (game->Key->Enter)
-		{
-			game->SetState<GameState>();
-		}
-	};
-	void Render()
-	{
-		renderer->Clear();
-	};
-
-private:
-	std::shared_ptr<Renderer> renderer;
 };
 
 #endif //GAME_STATE_H
