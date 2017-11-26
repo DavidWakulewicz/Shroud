@@ -1,5 +1,9 @@
 #include "Game.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include <iostream>
 #include <sstream>
 
@@ -27,8 +31,11 @@ Game::Game()
 	keyboard     = std::make_shared<Keyboard>();
 	player       = std::make_shared<Player>(keyboard);
 	camera       = std::make_shared<Camera>(player);
-	renderer     = std::make_unique<Renderer>(camera);
+	renderer     = std::make_shared<Renderer>(camera, player);
 	stateManager = std::make_unique<StateManager>();
+	world        = std::make_unique<World>(renderer);
+
+	camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
 
 	//Load PNG texture
 	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
@@ -66,7 +73,15 @@ void Game::Run()
 	stateManager->Change<GameState>();
 
 	//While application is running
+#if __EMSCRIPTEN__
+        if (!isRunning)
+        {
+                emscripten_cancel_main_loop();
+        }
+        else
+#else
 	while (isRunning)
+#endif
 	{
 		// Timer calculations
 		current = SDL_GetTicks();
@@ -84,7 +99,8 @@ void Game::Run()
 		}
 
 		//'render' function will control all rendering
-		renderer->Render();
+//		renderer->Render();
+		world->Render();
 		frames++;
 
 		timer += delta;

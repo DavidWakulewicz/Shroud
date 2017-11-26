@@ -3,7 +3,8 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 
-Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
+//Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
+Renderer::Renderer(std::shared_ptr<Camera> camera, std::shared_ptr<Player> player) : camera(camera), player(player)
 {
 	// Create window
 	// SDL_WINDOW_SHOWN flag is ignored according to document.
@@ -41,10 +42,8 @@ Renderer::Renderer(std::shared_ptr<Camera> camera) : camera(camera)
 
 	isFullscreen = false;
 
-	world = std::make_unique<World>(window);
 
 	camera->Scale.Set(2.0f, 2.0f);
-	camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
 	camera->Size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
 }
@@ -60,33 +59,43 @@ Renderer::~Renderer()
 	IMG_Quit();
 }
 
-void Renderer::Render()
+void Renderer::Clear() 
 {
-	//Clear screen
 	SDL_RenderClear(renderer);
+}
 
-	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
-
+void Renderer::AddToFrame(Tile tile) 
+{
 	SDL_Rect dRect;
 
-	//Render texture to screen
-	for (auto tile : world->Tiles)
-	{
-		dRect.x = tile.Pos.x - camera->Pos.x;
-		dRect.y = tile.Pos.y - camera->Pos.y;
-		dRect.w = tile.Bounds.x;
-		dRect.h = tile.Bounds.y;
+	dRect.x = tile.Pos.x - camera->Pos.x;
+	dRect.y = tile.Pos.y - camera->Pos.y;
+	dRect.w = tile.Bounds.x;
+	dRect.h = tile.Bounds.y;
 
-		if (dRect.x > -(tile.Bounds.x / camera->Scale.x * 3) &&
-		    dRect.y > -(tile.Bounds.y / camera->Scale.y * 3) && 
-		    dRect.x < (SCREEN_WIDTH / camera->Scale.x) + (tile.Bounds.x / camera->Scale.x * 3) &&
-		    dRect.y < (SCREEN_HEIGHT / camera->Scale.y) + (tile.Bounds.y / camera->Scale.y * 3))
-		{
-			SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
-		}
+	if (dRect.x > -(tile.Bounds.x / camera->Scale.x * 3) &&
+	    dRect.y > -(tile.Bounds.y / camera->Scale.y * 3) && 
+	    dRect.x < (SCREEN_WIDTH / camera->Scale.x) + (tile.Bounds.x / camera->Scale.x * 3) &&
+	    dRect.y < (SCREEN_HEIGHT / camera->Scale.y) + (tile.Bounds.y / camera->Scale.y * 3))
+	{
+		SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
 	}
+}
+
+void Renderer::Render()
+{
+	// Render player to screen
+	SDL_Rect r;
+	r.x = player->Pos.x - camera->Pos.x;
+	r.y = player->Pos.y - camera->Pos.y;
+	r.w = player->Bounds.x;
+	r.h = player->Bounds.y;
+	SDL_SetRenderDrawColor(renderer, 156, 219, 94, 175);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+	SDL_RenderFillRect(renderer, &r);
 
 	//Update screen
+	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
 	SDL_RenderPresent(renderer);
 }
 
@@ -149,4 +158,8 @@ void Renderer::ToggleFullscreen(uint32_t flag)
 void Renderer::SetWindowTitle(std::string title)
 {
 	SDL_SetWindowTitle(window, title.c_str());
+}
+
+uint32_t Renderer::GetWindowFormat() {
+	return SDL_GetWindowPixelFormat(window);
 }
