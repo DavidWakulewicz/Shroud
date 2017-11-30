@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include <SDL2/SDL_image.h>
+#include <iostream>
 
 Player::Player(std::shared_ptr<Keyboard> keyboard)
 	: Pos({0, 0}), Scale({1.0f, 1.0f}), Bounds({50, 50}), keyboard(keyboard)

@@ -5,9 +5,14 @@
 #endif
 
 #include <iostream>
-#include <sstream>
 
 #include "Renderer.h"
+#include "Player.h"
+#include "Keyboard.h"
+#include "Camera.h"
+
+#include "GameState.h"
+#include "MenuState.h"
 
 Game::Game()
 {
@@ -18,36 +23,23 @@ Game::Game()
 
 	//Set texture filtering to linear
 	if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-		std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
+		std::cout << "Warning: Linear texture filtering not enabled!"
+			<< std::endl;
 	}
 
-	keyboard = std::make_shared<Keyboard>();
-	player   = std::make_shared<Player>(keyboard);
-	camera   = std::make_shared<Camera>(player);
-	renderer = std::make_shared<Renderer>(camera, player);
-	world    = std::make_unique<World>(renderer);
 
-	camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
+	Key          = std::make_shared<Keyboard>();
+	stateManager = std::make_unique<StateManager>();
 
-	//Load PNG texture
-	SDL_Texture* texture = renderer->loadTexture("res/tiles/SpawnTileWall.png");
-	if (texture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		exit(1);
-	}
-	texture = renderer->loadTexture("res/tiles/SpawnTile.png");
-	if (texture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		exit(1);
-	}
-	texture = renderer->loadTexture("res/tiles/FootStepNorth.png");
-	if (texture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		exit(1);
-	}
+	//Main loop flag
+	isRunning = false;
+}
+
+void Game::Initalize()
+{
+	stateManager->Add<GameState>(shared_from_this());
+	stateManager->Add<MenuState>(shared_from_this());
+	stateManager->Change<GameState>();
 
 	//Main loop flag
 	isRunning = true;
@@ -58,10 +50,10 @@ Game::~Game()
 	SDL_Quit();
 }
 
-void Game::run()
+void Game::Run()
 {
 	//While application is running
-#if __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
         if (!isRunning)
         {
                 emscripten_cancel_main_loop();
@@ -70,7 +62,7 @@ void Game::run()
 #else
 	while (isRunning)
 #endif
-	{
+        {
 		// Timer calculations
 		current = SDL_GetTicks();
 		delta = (current - lastTime) / 1000.0f;
@@ -81,28 +73,10 @@ void Game::run()
 		while (updateDelta >= SECONDS_PER_UPDATE) {
 			// 'update' function that controls all updates (location of enemies, players, spells, input, etc.)
 			update();
-			updates++;
 			updateDelta -= SECONDS_PER_UPDATE;
 		}
 
-		//'render' function will control all rendering
-//		renderer->Render();
-		world->Render();
-		frames++;
-
-		timer += delta;
-		if (timer > 1.0f) {
-			std::ostringstream title;
-			title << "Shroud" << "  |  "
-			        << static_cast<int>(updates) << " UPS  "
-			        << frames << " FPS "
-			        << delta * 1000.0f << " ms";
-			renderer->SetWindowTitle(title.str());
-
-                        timer -= 1.0f;
-                        frames = 0;
-			updates = 0;
-		}
+		stateManager->Render();
 	}
 }
 
@@ -111,37 +85,27 @@ void Game::update() {
 	//Event handler
 	SDL_Event e;
 
+	MouseWheel = 0;
+
 	//Handle events on queue
 	while (SDL_PollEvent(&e) != 0)
 	{
 		switch (e.type)
 		{
 		case SDL_QUIT:
-			stop();
+			Stop();
 			break;
 		case SDL_MOUSEWHEEL:
-			if (e.wheel.y < 0)
-			{
-				camera->ZoomIn();
-			}
-			else if (e.wheel.y > 0)
-			{
-				camera->ZoomOut();
-			}
+			MouseWheel = e.wheel.y;
 			break;
 		}
 	}
 
-	keyboard->Update();
-
-	if (keyboard->Escape)     stop();
-	if (keyboard->Fullscreen) renderer->ToggleFullscreen();
-
-	player->Update();
-	camera->Update();
+	Key->Update();
+	stateManager->Update(SECONDS_PER_UPDATE);
 }
 
-void Game::stop()
+void Game::Stop()
 {
 	isRunning = false;
 }

@@ -15,7 +15,6 @@ void Camera::Update()
 	this->Pos = player->Pos;
 	this->Pos.x -= (((Size.x / Scale.x) - player->Bounds.x) / 2);
 	this->Pos.y -= (((Size.y / Scale.y) - player->Bounds.y) / 2);
-	
 
 	if (Pos.x < 0)
 	{

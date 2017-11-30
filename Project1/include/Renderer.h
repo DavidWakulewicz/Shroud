@@ -13,6 +13,7 @@
 class Renderer
 {
 public:
+	Renderer();
 	Renderer(std::shared_ptr<Camera>, std::shared_ptr<Player>);
 	~Renderer();
 

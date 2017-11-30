@@ -6,13 +6,13 @@
 class Keyboard
 {
 public:
-	Keyboard();
-	~Keyboard();
-
 	bool Up;
 	bool Down;
 	bool Left;
 	bool Right;
+	bool Q;
+	bool Enter;
+	bool Tab;
 
 	bool Fullscreen;
 	bool Escape;

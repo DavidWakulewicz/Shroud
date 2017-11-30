@@ -1,3 +1,5 @@
+#include <memory>
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -7,16 +9,17 @@
 
 void mainLoop(void *g)
 {
-        ((Game *)g)->run();
+	((Game*)g)->Run();
 }
 
 int main(int argc, char* args[]) {
-	Game game;
+	auto game = std::make_shared<Game>();
+	game->Initalize();
 
 #ifdef __EMSCRIPTEN__
-        emscripten_set_main_loop_arg(mainLoop, &game, 0, 1);
+        emscripten_set_main_loop_arg(mainLoop, game.get(), 0, 1);
 #else
-	game.run();
+	game->Run();
 #endif
 
 	return 0;
