@@ -48,6 +48,13 @@ Renderer::Renderer(std::shared_ptr<Camera> camera, std::shared_ptr<Player> playe
 	camera->Scale.Set(2.0f, 2.0f);
 	camera->Size.Set(SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);
+
+	SDL_Texture* texture = this->loadTexture(player->Texture);
+	if (texture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		exit(1);
+	}
 }
 
 Renderer::~Renderer()
@@ -66,35 +73,28 @@ void Renderer::Clear()
 	SDL_RenderClear(renderer);
 }
 
-void Renderer::AddToFrame(Tile tile) 
+void Renderer::AddToFrame(std::shared_ptr<Entity> entity) 
 {
 	SDL_Rect dRect;
 
-	dRect.x = tile.Pos.x - camera->Pos.x;
-	dRect.y = tile.Pos.y - camera->Pos.y;
-	dRect.w = tile.Bounds.x;
-	dRect.h = tile.Bounds.y;
+	dRect.x = entity->Pos.x - camera->Pos.x;
+	dRect.y = entity->Pos.y - camera->Pos.y;
+	dRect.w = entity->Bounds.x;
+	dRect.h = entity->Bounds.y;
 
-	if (dRect.x > -(tile.Bounds.x / camera->Scale.x * 3) &&
-	    dRect.y > -(tile.Bounds.y / camera->Scale.y * 3) && 
-	    dRect.x < (SCREEN_WIDTH / camera->Scale.x) + (tile.Bounds.x / camera->Scale.x * 3) &&
-	    dRect.y < (SCREEN_HEIGHT / camera->Scale.y) + (tile.Bounds.y / camera->Scale.y * 3))
-	{
-		SDL_RenderCopy(renderer, textures[tile.Texture], NULL, &dRect);
+	if (dRect.x > -(entity->Bounds.x / camera->Scale.x * 3) &&
+	    dRect.y > -(entity->Bounds.y / camera->Scale.y * 3) && 
+	    dRect.x < (SCREEN_WIDTH / camera->Scale.x) + (entity->Bounds.x / camera->Scale.x * 3) &&
+	    dRect.y < (SCREEN_HEIGHT / camera->Scale.y) + (entity->Bounds.y / camera->Scale.y * 3))
+	{	
+		SDL_RenderCopy(renderer, textures[entity->Texture], NULL, &dRect);
 	}
 }
 
 void Renderer::Render()
 {
 	// Render player to screen
-	SDL_Rect r;
-	r.x = player->Pos.x - camera->Pos.x;
-	r.y = player->Pos.y - camera->Pos.y;
-	r.w = player->Bounds.x;
-	r.h = player->Bounds.y;
-	SDL_SetRenderDrawColor(renderer, 156, 219, 94, 175);
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-	SDL_RenderFillRect(renderer, &r);
+	this->AddToFrame(player);
 
 	//Update screen
 	SDL_RenderSetScale(renderer, camera->Scale.x, camera->Scale.y);

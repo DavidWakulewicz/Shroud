@@ -78,11 +78,11 @@ void World::LoadWorld(std::string world)
 				isPortal = true;
 			}
 
-			Tile tile(path);
 			tile.Pos.x = x * Tile::WIDTH;
 			tile.Pos.y = y * Tile::HEIGHT;
 			tile.Solid = isSolid;
 			tile.Portal = isPortal;
+			std::shared_ptr<Tile> tile = std::make_shared<Tile>(path);
 			Tiles.push_back(tile);
 		}
 	}
@@ -207,5 +207,7 @@ void World::Collisions() {
 void World::Render() {
 	for (auto tile : Tiles) {
 		renderer->AddToFrame(tile);
+//		std::cout << "hello " + tile.Texture + "' right\n";
+//		std::cout << tile.Texture;
 	}
 }

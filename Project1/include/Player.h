@@ -4,22 +4,15 @@
 #include <ostream>
 #include <memory>
 
-#include "Point.h"
 #include "Keyboard.h"
+#include "Entity.h"
 
-class Player
+class Player: public Entity
 {
 public:
-	Player(std::shared_ptr<Keyboard>);
-	Player(std::shared_ptr<Keyboard>, int64_t, int64_t);
+	Player(std::string texture, std::shared_ptr<Keyboard>);
+	Player(std::string texture, std::shared_ptr<Keyboard>, int64_t, int64_t);
 
-	Point<int64_t> Pos;
-	Point<int64_t> Size;
-	Point<float>   Scale;
-	Point<int64_t> Bounds;
-
-	int64_t Health;
-	float   Speed;
 
 	void Update();
 private:

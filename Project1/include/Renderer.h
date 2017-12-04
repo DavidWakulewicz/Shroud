@@ -18,7 +18,7 @@ public:
 	~Renderer();
 
 	void Clear();
-	void AddToFrame(Tile);
+	void AddToFrame(std::shared_ptr<Entity> entity);
 	void Render();
 
 	SDL_Texture* loadTexture(std::string);

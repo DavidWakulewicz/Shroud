@@ -17,9 +17,13 @@ public:
 	int64_t Width;
 	int64_t Height;
 
+<<<<<<< 90ebe828a0772823e519abcddb363b5473a2dd6e
 	std::vector<Tile> Tiles;
 
 	void Collisions();
+=======
+	std::vector<std::shared_ptr<Entity>> Tiles;
+>>>>>>> Tiles and player inherit from Entity class
 	void Render();
 	void LoadWorld(std::string);
 private:

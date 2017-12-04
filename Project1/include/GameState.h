@@ -25,7 +25,7 @@ public:
 
 	void Initialize()
 	{
-		player   = std::make_shared<Player>(game->Key);
+		player   = std::make_shared<Player>("res/player/temp_player.png",game->Key);
 		camera   = std::make_shared<Camera>(player);
 		renderer = std::make_shared<Renderer>(camera, player);
 		world    = std::make_unique<World>(renderer, player);
