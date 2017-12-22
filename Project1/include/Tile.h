@@ -20,6 +20,8 @@ public:
 	Point<uint16_t> Bounds;
 
 	std::string Texture;
+
+	bool Solid;
 private:
 };
 #endif // TILE_H
