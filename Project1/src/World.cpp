@@ -74,7 +74,10 @@ World::World(std::shared_ptr<Renderer> renderer, std::shared_ptr<Player> player)
 }
 
 void World::Collisions() {
-	for (auto tile : Tiles) {
+	for (std::vector<Tile>::iterator it = Tiles.begin(); it != Tiles.end(); ++it)
+	{
+    		Tile tile = *it;
+
 		// Don't check tiles that are not solid
 		if (!tile.Solid)
 		{
@@ -122,24 +125,29 @@ void World::Collisions() {
 		// not get caught on a corner, it will push the player out if
 		// he is moving faster than the amount he is caught on the
 		// corner
+		// Check that the tile it's moving into is not a solid tile
 		if (std::max(overlapLeft, overlapRight) <= std::max(overlapTop, overlapBottom))
 		{
-			if (overlapLeft <= overlapRight)
+			// Collision on right side
+			if (overlapLeft <= overlapRight && !(it-Height)->Solid)
 			{
 				player->Pos.x = tile.Pos.x - player->Bounds.x;
 			}
-			else if (overlapRight < overlapLeft)
+			// Collision on left side
+			else if (overlapRight < overlapLeft && !(it+Height)->Solid)
 			{
 				player->Pos.x = tile.Pos.x + tile.Bounds.x;
 			}
 		}
 		else if (std::max(overlapTop, overlapBottom) < std::max(overlapLeft, overlapRight))
 		{
-			if (overlapTop <= overlapBottom)
+			// Collision on bottom side
+			if (overlapTop <= overlapBottom && !(it-1)->Solid)
 			{
 				player->Pos.y = tile.Pos.y - player->Bounds.y;
 			}
-			else if (overlapBottom < overlapTop)
+			// Collision on top side
+			else if (overlapBottom < overlapTop && !(it+1)->Solid)
 			{
 				player->Pos.y = tile.Pos.y + tile.Bounds.y;
 			}
