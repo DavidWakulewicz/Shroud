@@ -142,7 +142,13 @@ void World::Collisions() {
 		// treat it as solid
 		if (tile.Portal)
 		{
-			if (overlapTop > 0 && overlapBottom > 0)
+			// Overlap of both sides is greater than 0 means it
+			// is completely in inside the tile
+			// Assumption the tile is larger size than player, if
+			// the player is larger than it can not be completly
+			// inside
+			if ((overlapLeft > 0 && overlapRight > 0) ||
+				(overlapTop > 0 && overlapBottom > 0))
 			{
 				if (currentWorld == "world")
 				{
