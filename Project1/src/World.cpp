@@ -12,18 +12,26 @@
 
 World::World(std::shared_ptr<Renderer> renderer, std::shared_ptr<Player> player) : renderer(renderer),  player(player)
 {
+	LoadWorld("world");
+}
+
+void World::LoadWorld(std::string world)
+{
 	uint32_t format = renderer->GetWindowFormat();
 	SDL_PixelFormat* mappingFormat = SDL_AllocFormat(format);
 
 	uint32_t wall = SDL_MapRGB(mappingFormat, 0x00, 0x00, 0x00);
 	uint32_t floor = SDL_MapRGB(mappingFormat, 0x00, 0xA9, 0xFF);
 	uint32_t steps = SDL_MapRGB(mappingFormat, 0x00, 0x6E, 0xA5);
+	uint32_t portal = SDL_MapRGB(mappingFormat, 0xFF, 0x00, 0xFF);
+
+	std::string path = "res/levels/" + world + ".png";
 
 	//Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load("res/levels/world.png");
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 	if (loadedSurface == NULL)
 	{
-		std::cout << "Unable to load image " << "res/levels/world.png"
+		std::cout << "Unable to load image " << path
 			<< "! SDL_image Error: " << IMG_GetError() << std::endl;
 
 		return;
@@ -42,16 +50,19 @@ World::World(std::shared_ptr<Renderer> renderer, std::shared_ptr<Player> player)
 	Width = formattedSurface->w;
 	Height = formattedSurface->h;
 
+	Tiles.clear();
+
 	for (int x = 0; x < Width; x++) {
 		for (int y = 0; y < Height; y++) {
 			int i = (x % Width) + (y * Height);
 
 			std::string path;
-			bool solid = false;
+			bool isSolid = false;
+			bool isPortal = false;
 			if (static_cast<uint32_t*>(formattedSurface->pixels)[i] == wall)
 			{
 				path = "res/tiles/SpawnTileWall.png";
-				solid = true;
+				isSolid = true;
 			}
 			else if (static_cast<uint32_t*>(formattedSurface->pixels)[i] == floor)
 			{
@@ -61,14 +72,22 @@ World::World(std::shared_ptr<Renderer> renderer, std::shared_ptr<Player> player)
 			{
 				path = "res/tiles/FootStepNorth.png";
 			}
+			else if (static_cast<uint32_t*>(formattedSurface->pixels)[i] == portal)
+			{
+				path = "res/tiles/FootStepNorth.png";
+				isPortal = true;
+			}
 
 			Tile tile(path);
 			tile.Pos.x = x * Tile::WIDTH;
 			tile.Pos.y = y * Tile::HEIGHT;
-			tile.Solid = solid;
+			tile.Solid = isSolid;
+			tile.Portal = isPortal;
 			Tiles.push_back(tile);
 		}
 	}
+
+	currentWorld = world;
 
 	SDL_FreeSurface(formattedSurface);
 }
@@ -79,7 +98,7 @@ void World::Collisions() {
     		Tile tile = *it;
 
 		// Don't check tiles that are not solid
-		if (!tile.Solid)
+		if (!tile.Solid && !tile.Portal)
 		{
 			continue;
 		}
@@ -116,6 +135,26 @@ void World::Collisions() {
 		// There is no collision skip this tile
 		if ((!overlapLeft && !overlapRight) || (!overlapTop && !overlapBottom))
 		{
+			continue;
+		}
+
+		// Should check overlap but will continue so it does not
+		// treat it as solid
+		if (tile.Portal)
+		{
+			if (overlapTop > 0 && overlapBottom > 0)
+			{
+				if (currentWorld == "world")
+				{
+					LoadWorld("world2");
+					player->Pos.y = 64*28;
+				}
+				else if (currentWorld == "world2")
+				{
+					LoadWorld("world");
+					player->Pos.y = 64*1;
+				}
+			}
 			continue;
 		}
 

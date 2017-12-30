@@ -7,6 +7,7 @@ Tile::Tile(std::string texture) :
 	Pos({0, 0}),
 	Bounds({Tile::WIDTH, Tile::HEIGHT}),
 	Texture(texture),
-	Solid(false)
+	Solid(false),
+	Portal(false)
 {
 }
