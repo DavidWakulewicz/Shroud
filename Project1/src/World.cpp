@@ -1,11 +1,16 @@
 #include "World.h"
 
 #include <iostream>
+#include <algorithm>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-World::World(std::shared_ptr<Renderer> renderer) : renderer(renderer)
+#include "Tile.h"
+#include "Renderer.h"
+#include "Player.h"
+
+World::World(std::shared_ptr<Renderer> renderer, std::shared_ptr<Player> player) : renderer(renderer),  player(player)
 {
 	uint32_t format = renderer->GetWindowFormat();
 	SDL_PixelFormat* mappingFormat = SDL_AllocFormat(format);
@@ -36,15 +41,17 @@ World::World(std::shared_ptr<Renderer> renderer) : renderer(renderer)
 
 	Width = formattedSurface->w;
 	Height = formattedSurface->h;
-	
+
 	for (int x = 0; x < Width; x++) {
 		for (int y = 0; y < Height; y++) {
 			int i = (x % Width) + (y * Height);
 
 			std::string path;
+			bool solid = false;
 			if (static_cast<uint32_t*>(formattedSurface->pixels)[i] == wall)
 			{
 				path = "res/tiles/SpawnTileWall.png";
+				solid = true;
 			}
 			else if (static_cast<uint32_t*>(formattedSurface->pixels)[i] == floor)
 			{
@@ -58,6 +65,7 @@ World::World(std::shared_ptr<Renderer> renderer) : renderer(renderer)
 			Tile tile(path);
 			tile.Pos.x = x * Tile::WIDTH;
 			tile.Pos.y = y * Tile::HEIGHT;
+			tile.Solid = solid;
 			Tiles.push_back(tile);
 		}
 	}
@@ -65,14 +73,92 @@ World::World(std::shared_ptr<Renderer> renderer) : renderer(renderer)
 	SDL_FreeSurface(formattedSurface);
 }
 
+void World::Collisions() {
+	for (std::vector<Tile>::iterator it = Tiles.begin(); it != Tiles.end(); ++it)
+	{
+    		Tile tile = *it;
+
+		// Don't check tiles that are not solid
+		if (!tile.Solid)
+		{
+			continue;
+		}
+
+		// Get how much overlap there is on the player in each direction
+		float overlapLeft = 0.0f;
+		float overlapRight = 0.0f;
+		float overlapTop = 0.0f;
+		float overlapBottom = 0.0f;
+		if (player->Pos.x < tile.Pos.x + tile.Bounds.x &&
+			player->Pos.x > tile.Pos.x)
+		{
+			overlapLeft = (tile.Pos.x + tile.Bounds.x) - player->Pos.x;
+		}
+
+		if (player->Pos.x + player->Bounds.x > tile.Pos.x &&
+			player->Pos.x + player->Bounds.x < tile.Pos.x + tile.Bounds.x)
+		{
+			overlapRight = (player->Pos.x + player->Bounds.x) - tile.Pos.x;
+		}
+
+		if (player->Pos.y < tile.Pos.y + tile.Bounds.y &&
+			player->Pos.y > tile.Pos.y)
+		{
+			overlapTop = (tile.Pos.y + tile.Bounds.y) - player->Pos.y;
+		}
+
+		if (player->Pos.y + player->Bounds.y > tile.Pos.y &&
+			player->Pos.y + player->Bounds.y < tile.Pos.y + tile.Bounds.y)
+		{
+			overlapBottom = (player->Pos.y + player->Bounds.y) - tile.Pos.y;
+		}
+
+		// There is no collision skip this tile
+		if ((!overlapLeft && !overlapRight) || (!overlapTop && !overlapBottom))
+		{
+			continue;
+		}
+
+		// Assumption: The direction the player is moving will result
+		// in a smaller overlap than other directions
+		// This actually adds a bit of a cool feature so the player does
+		// not get caught on a corner, it will push the player out if
+		// he is moving faster than the amount he is caught on the
+		// corner
+		// Check that the tile it's moving into is not a solid tile
+		if (std::max(overlapLeft, overlapRight) <= std::max(overlapTop, overlapBottom))
+		{
+			// Collision on right side
+			if (overlapLeft <= overlapRight && !(it-Height)->Solid)
+			{
+				player->Pos.x = tile.Pos.x - player->Bounds.x;
+			}
+			// Collision on left side
+			else if (overlapRight < overlapLeft && !(it+Height)->Solid)
+			{
+				player->Pos.x = tile.Pos.x + tile.Bounds.x;
+			}
+		}
+		else if (std::max(overlapTop, overlapBottom) < std::max(overlapLeft, overlapRight))
+		{
+			// Collision on bottom side
+			if (overlapTop <= overlapBottom && !(it-1)->Solid)
+			{
+				player->Pos.y = tile.Pos.y - player->Bounds.y;
+			}
+			// Collision on top side
+			else if (overlapBottom < overlapTop && !(it+1)->Solid)
+			{
+				player->Pos.y = tile.Pos.y + tile.Bounds.y;
+			}
+		}
+	}
+}
+
 // Multiple maps? Potentially split into smaller 'Map' classes
 // Have something to track the 'active map' then the for loop for the tiles would just be 'for tile : activeMap.Tiles) {...'
 void World::Render() {
-	renderer->Clear();
-	
 	for (auto tile : Tiles) {
 		renderer->AddToFrame(tile);
 	}
-
-	renderer->Render();
 }

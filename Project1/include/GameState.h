@@ -28,7 +28,7 @@ public:
 		player   = std::make_shared<Player>(game->Key);
 		camera   = std::make_shared<Camera>(player);
 		renderer = std::make_shared<Renderer>(camera, player);
-		world    = std::make_unique<World>(renderer);
+		world    = std::make_unique<World>(renderer, player);
 
 		camera->Bounds.Set(world->Width * Tile::WIDTH, world->Height * Tile::HEIGHT);
 
@@ -61,9 +61,6 @@ public:
 	{
 		updates++;
 
-		player->Update();
-		camera->Update();
-
 		if (game->Key->Escape)
 		{
 			game->Stop();
@@ -86,6 +83,11 @@ public:
 			camera->ZoomOut();
 		}
 
+		player->Update();
+		world->Collisions();
+
+		camera->Update();
+
 		timer += delta;
 		if (timer > 1.0f) {
 			std::ostringstream title;
@@ -100,11 +102,16 @@ public:
 			updates = 0;
 		}
 	};
+
 	void Render()
 	{
 		frames++;
 
+		renderer->Clear();
+
 		world->Render();
+
+		renderer->Render();
 	};
 
 private:
