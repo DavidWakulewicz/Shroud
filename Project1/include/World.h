@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 class Tile;
@@ -20,9 +21,12 @@ public:
 
 	void Collisions();
 	void Render();
+	void LoadWorld(std::string);
 private:
 	std::shared_ptr<Renderer> renderer;
 	std::shared_ptr<Player> player;
+
+	std::string currentWorld;
 };
 
 #endif //WORLD_H

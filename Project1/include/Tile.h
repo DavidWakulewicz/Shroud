@@ -22,6 +22,7 @@ public:
 	std::string Texture;
 
 	bool Solid;
+	bool Portal;
 private:
 };
 #endif // TILE_H
