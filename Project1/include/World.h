@@ -1,8 +1,8 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include <cstdint>
 #include <string>
+#include <memory>
 #include <vector>
 
 class Tile;
