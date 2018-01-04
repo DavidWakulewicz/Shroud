@@ -108,26 +108,26 @@ void World::Collisions() {
 		float overlapRight = 0.0f;
 		float overlapTop = 0.0f;
 		float overlapBottom = 0.0f;
-		if (player->Pos.x < tile.Pos.x + tile.Bounds.x &&
-			player->Pos.x > tile.Pos.x)
+		if (player->Pos.x <= tile.Pos.x + tile.Bounds.x &&
+			player->Pos.x >= tile.Pos.x)
 		{
 			overlapLeft = (tile.Pos.x + tile.Bounds.x) - player->Pos.x;
 		}
 
-		if (player->Pos.x + player->Bounds.x > tile.Pos.x &&
-			player->Pos.x + player->Bounds.x < tile.Pos.x + tile.Bounds.x)
+		if (player->Pos.x + player->Bounds.x >= tile.Pos.x &&
+			player->Pos.x + player->Bounds.x <= tile.Pos.x + tile.Bounds.x)
 		{
 			overlapRight = (player->Pos.x + player->Bounds.x) - tile.Pos.x;
 		}
 
-		if (player->Pos.y < tile.Pos.y + tile.Bounds.y &&
-			player->Pos.y > tile.Pos.y)
+		if (player->Pos.y <= tile.Pos.y + tile.Bounds.y &&
+			player->Pos.y >= tile.Pos.y)
 		{
 			overlapTop = (tile.Pos.y + tile.Bounds.y) - player->Pos.y;
 		}
 
-		if (player->Pos.y + player->Bounds.y > tile.Pos.y &&
-			player->Pos.y + player->Bounds.y < tile.Pos.y + tile.Bounds.y)
+		if (player->Pos.y + player->Bounds.y >= tile.Pos.y &&
+			player->Pos.y + player->Bounds.y <= tile.Pos.y + tile.Bounds.y)
 		{
 			overlapBottom = (player->Pos.y + player->Bounds.y) - tile.Pos.y;
 		}
@@ -147,13 +147,15 @@ void World::Collisions() {
 			// Assumption the tile is larger size than player, if
 			// the player is larger than it can not be completly
 			// inside
-			if ((overlapLeft > 0 && overlapRight > 0) ||
-				(overlapTop > 0 && overlapBottom > 0))
+			if ((overlapLeft > tile.WIDTH / 2 &&
+				overlapRight > tile.WIDTH / 2) &&
+				(overlapTop > tile.HEIGHT / 2 &&
+				 overlapBottom > tile.HEIGHT / 2))
 			{
 				if (currentWorld == "world")
 				{
 					LoadWorld("world2");
-					player->Pos.y = 64*28;
+					player->Pos.y = 64*29-50;
 				}
 				else if (currentWorld == "world2")
 				{

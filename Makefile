@@ -3,7 +3,7 @@ CLIENT_BUILD = Project1/build
 CLIENT_SRC = Project1/src
 CLIENT_BIN = Project1/bin
 
-CLIENT_SRCS = StateManager.cpp Player.cpp World.cpp Keyboard.cpp Tile.cpp Camera.cpp Game.cpp Renderer.cpp main.cpp
+CLIENT_SRCS = StateManager.cpp Player.cpp World.cpp Keyboard.cpp Tile.cpp Camera.cpp Game.cpp Renderer.cpp Main.cpp
 CLIENT_SRCS := $(CLIENT_SRCS:%.cpp=$(CLIENT_SRC)/%.cpp)
 
 CLIENT_OBJS := $(CLIENT_SRCS:$(CLIENT_SRC)%.cpp=$(CLIENT_BUILD)%.o)
