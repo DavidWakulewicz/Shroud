@@ -160,7 +160,7 @@ void World::Collisions() {
 				else if (currentWorld == "world2")
 				{
 					LoadWorld("world");
-					player->Pos.y = 1 * Tile::HEIGHT * 1;
+					player->Pos.y = 1 * Tile::HEIGHT;
 				}
 			}
 			continue;
