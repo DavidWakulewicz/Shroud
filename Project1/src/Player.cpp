@@ -4,7 +4,7 @@
 #include <iostream>
 
 Player::Player(std::string texture, std::shared_ptr<Keyboard> keyboard)
-	: Entity(texture, 100, 100), keyboard(keyboard)
+	: Entity(texture), keyboard(keyboard)
 {
 }
 

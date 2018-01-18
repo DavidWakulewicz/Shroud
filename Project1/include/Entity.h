@@ -7,14 +7,14 @@ class Entity
 {
 public:
 	Entity(std::string texture)
-	:Texture(texture), Pos({0, 0}), Scale({1.0f, 1.0f}), Bounds({50, 50}), Health(100), Speed(10)  {};
+	:Texture(texture), Pos({100, 100}), Scale({1.0f, 1.0f}), Bounds({50, 50}), Health(100), Speed(10)  {};
 
 	Entity(std::string texture, int64_t x, int64_t y)
 	:Texture(texture), Pos({x, y}), Scale({1.0f, 1.0f}), Bounds({50, 50}), Health(100), Speed(10) {};
 
 //	~Entity();
 	std::string Texture;
-	
+
 	Point<int64_t> Pos;
 	Point<int64_t> Size;
 	Point<float>   Scale;
