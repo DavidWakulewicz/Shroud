@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 
+#include "Entity.h"
+
 class Tile;
 class Renderer;
 class Player;
@@ -17,7 +19,7 @@ public:
 	int64_t Width;
 	int64_t Height;
 
-	std::vector<Tile> Tiles;
+	std::vector<std::shared_ptr<Entity>> Tiles;
 
 	void Collisions();
 	void Render();

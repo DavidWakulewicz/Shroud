@@ -78,11 +78,11 @@ void World::LoadWorld(std::string world)
 				isPortal = true;
 			}
 
-			Tile tile(path);
-			tile.Pos.x = x * Tile::WIDTH;
-			tile.Pos.y = y * Tile::HEIGHT;
-			tile.Solid = isSolid;
-			tile.Portal = isPortal;
+			std::shared_ptr<Tile> tile = std::make_shared<Tile>(path);
+			tile->Pos.x = x * Tile::WIDTH;
+			tile->Pos.y = y * Tile::HEIGHT;
+			tile->Solid = isSolid;
+			tile->Portal = isPortal;
 			Tiles.push_back(tile);
 		}
 	}
@@ -93,12 +93,13 @@ void World::LoadWorld(std::string world)
 }
 
 void World::Collisions() {
-	for (std::vector<Tile>::iterator it = Tiles.begin(); it != Tiles.end(); ++it)
+	for (std::vector<std::shared_ptr<Entity>>::iterator it = Tiles.begin(); it != Tiles.end(); ++it)
 	{
-    		Tile tile = *it;
+    		//Tile tile = dynamic_cast<Tile>(*it);
+		std::shared_ptr<Tile> tile = std::dynamic_pointer_cast<Tile>(*it);
 
 		// Don't check tiles that are not solid
-		if (!tile.Solid && !tile.Portal)
+		if (!tile->Solid && !tile->Portal)
 		{
 			continue;
 		}
@@ -108,28 +109,28 @@ void World::Collisions() {
 		float overlapRight = 0.0f;
 		float overlapTop = 0.0f;
 		float overlapBottom = 0.0f;
-		if (player->Pos.x <= tile.Pos.x + tile.Bounds.x &&
-			player->Pos.x >= tile.Pos.x)
+		if (player->Pos.x <= tile->Pos.x + tile->Bounds.x &&
+			player->Pos.x >= tile->Pos.x)
 		{
-			overlapLeft = (tile.Pos.x + tile.Bounds.x) - player->Pos.x;
+			overlapLeft = (tile->Pos.x + tile->Bounds.x) - player->Pos.x;
 		}
 
-		if (player->Pos.x + player->Bounds.x >= tile.Pos.x &&
-			player->Pos.x + player->Bounds.x <= tile.Pos.x + tile.Bounds.x)
+		if (player->Pos.x + player->Bounds.x >= tile->Pos.x &&
+			player->Pos.x + player->Bounds.x <= tile->Pos.x + tile->Bounds.x)
 		{
-			overlapRight = (player->Pos.x + player->Bounds.x) - tile.Pos.x;
+			overlapRight = (player->Pos.x + player->Bounds.x) - tile->Pos.x;
 		}
 
-		if (player->Pos.y <= tile.Pos.y + tile.Bounds.y &&
-			player->Pos.y >= tile.Pos.y)
+		if (player->Pos.y <= tile->Pos.y + tile->Bounds.y &&
+			player->Pos.y >= tile->Pos.y)
 		{
-			overlapTop = (tile.Pos.y + tile.Bounds.y) - player->Pos.y;
+			overlapTop = (tile->Pos.y + tile->Bounds.y) - player->Pos.y;
 		}
 
-		if (player->Pos.y + player->Bounds.y >= tile.Pos.y &&
-			player->Pos.y + player->Bounds.y <= tile.Pos.y + tile.Bounds.y)
+		if (player->Pos.y + player->Bounds.y >= tile->Pos.y &&
+			player->Pos.y + player->Bounds.y <= tile->Pos.y + tile->Bounds.y)
 		{
-			overlapBottom = (player->Pos.y + player->Bounds.y) - tile.Pos.y;
+			overlapBottom = (player->Pos.y + player->Bounds.y) - tile->Pos.y;
 		}
 
 		// There is no collision skip this tile
@@ -140,17 +141,17 @@ void World::Collisions() {
 
 		// Should check overlap but will continue so it does not
 		// treat it as solid
-		if (tile.Portal)
+		if (tile->Portal)
 		{
 			// Overlap of both sides is greater than 0 means it
 			// is completely in inside the tile
 			// Assumption the tile is larger size than player, if
 			// the player is larger than it can not be completly
 			// inside
-			if ((overlapLeft > tile.WIDTH / 2 &&
-				overlapRight > tile.WIDTH / 2) &&
-				(overlapTop > tile.HEIGHT / 2 &&
-				 overlapBottom > tile.HEIGHT / 2))
+			if ((overlapLeft > tile->WIDTH / 2 &&
+				overlapRight > tile->WIDTH / 2) &&
+				(overlapTop > tile->HEIGHT / 2 &&
+				 overlapBottom > tile->HEIGHT / 2))
 			{
 				if (currentWorld == "world")
 				{
@@ -175,28 +176,47 @@ void World::Collisions() {
 		// Check that the tile it's moving into is not a solid tile
 		if (std::max(overlapLeft, overlapRight) <= std::max(overlapTop, overlapBottom))
 		{
-			// Collision on right side
-			if (overlapLeft <= overlapRight && !(it-Height)->Solid)
-			{
-				player->Pos.x = tile.Pos.x - player->Bounds.x;
+			// Collision on right or left side
+
+			auto newIterator = it-Height;
+			std::shared_ptr<Tile> rightTile;
+
+			if (tile->Pos.x == 0) {
+				player->Pos.x = tile->Pos.x + tile->Bounds.x;
 			}
-			// Collision on left side
-			else if (overlapRight < overlapLeft && !(it+Height)->Solid)
-			{
-				player->Pos.x = tile.Pos.x + tile.Bounds.x;
+			else {
+		
+				rightTile = std::dynamic_pointer_cast<Tile>(*newIterator);
+	
+				newIterator = it+Height;
+				auto leftTile = std::dynamic_pointer_cast<Tile>(*newIterator);
+	
+				if (overlapLeft <= overlapRight && !rightTile->Solid)
+				{
+					player->Pos.x = tile->Pos.x - player->Bounds.x;
+				}
+				else if (overlapRight < overlapLeft && !leftTile->Solid)
+				{
+					player->Pos.x = tile->Pos.x + tile->Bounds.x;
+				}
 			}
 		}
 		else if (std::max(overlapTop, overlapBottom) < std::max(overlapLeft, overlapRight))
 		{
-			// Collision on bottom side
-			if (overlapTop <= overlapBottom && !(it-1)->Solid)
+			// Collision on bottom or top side
+			auto newIterator = it-1;
+			auto bottomTile = std::dynamic_pointer_cast<Tile>(*newIterator);
+
+			newIterator = it+1;
+			auto topTile = std::dynamic_pointer_cast<Tile>(*newIterator);
+
+			if (overlapTop <= overlapBottom && !bottomTile->Solid)
 			{
-				player->Pos.y = tile.Pos.y - player->Bounds.y;
+				player->Pos.y = tile->Pos.y - player->Bounds.y;
 			}
-			// Collision on top side
-			else if (overlapBottom < overlapTop && !(it+1)->Solid)
+			else if (overlapBottom < overlapTop && !topTile->Solid)
 			{
-				player->Pos.y = tile.Pos.y + tile.Bounds.y;
+				player->Pos.y = tile->Pos.y + tile->Bounds.y;
 			}
 		}
 	}

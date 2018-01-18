@@ -8,7 +8,7 @@
 
 #include "Camera.h"
 
-class Tile
+class Tile: public Entity
 {
 public:
 	const static uint8_t WIDTH;
@@ -16,13 +16,11 @@ public:
 
 	Tile(std::string);
 
-	Point<uint64_t> Pos;
-	Point<uint16_t> Bounds;
-
-	std::string Texture;
-
 	bool Solid;
 	bool Portal;
 private:
+	void Update(){
+		return;
+	};
 };
 #endif // TILE_H
